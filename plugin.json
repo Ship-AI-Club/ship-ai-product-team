@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ship-ai-product-team",
+  "version": "1.0.0",
+  "description": "A PM-led product team with full design, research, copy and engineering skills. Uses PStack and a verified Cursor Cloud handoff.",
+  "author": {
+    "name": "Ship AI",
+    "url": "https://www.shipai.club"
+  },
+  "repository": "https://github.com/Ship-AI-Club/ship-ai-product-team",
+  "license": "SEE LICENSE AND THIRD_PARTY_NOTICES.md",
+  "homepage": "https://www.shipai.club/programs/zero-to-launch/hackathon/bots",
+  "keywords": [
+    "ship-ai",
+    "grok-bot",
+    "product",
+    "design",
+    "marketing",
+    "cursor-cloud"
+  ]
+}

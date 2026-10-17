@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "version": 1,
+  "isDemo": true,
+  "business": {
+    "name": "Your business",
+    "audienceType": "unsure",
+    "description": "A useful starting point, ready for your business.",
+    "customer": "Your chosen customer",
+    "industry": "",
+    "region": null,
+    "offer": "Your approved offer",
+    "pricing": {
+      "model": "unknown",
+      "display": null,
+      "approved": false
+    }
+  },
+  "intake": {
+    "answers": [],
+    "openQuestions": []
+  },
+  "positioning": {
+    "status": "draft",
+    "headline": "A useful offer. A clear next step.",
+    "summary": "Turn what you know about your customers into a website that helps them move forward. Your bot will tailor this starter to your business.",
+    "difference": "",
+    "sources": []
+  },
+  "product": {
+    "status": "draft",
+    "journey": "assessment",
+    "primaryAction": {
+      "label": "Try the experience",
+      "href": "/start"
+    },
+    "outcome": "Find a practical next step.",
+    "acceptance": []
+  },
+  "brand": {
+    "accent": "#335fd7",
+    "ink": "#182a43",
+    "paper": "#f7f9fc"
+  },
+  "about": {
+    "status": "draft",
+    "headline": "The people and purpose behind your business.",
+    "body": [],
+    "facts": []
+  },
+  "articles": [],
+  "solutions": [],
+  "siteUrl": null,
+  "publicationApproved": false,
+  "setup": {
+    "buildModel": null,
+    "effort": "medium"
+  }
+}

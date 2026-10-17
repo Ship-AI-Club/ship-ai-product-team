@@ -1,0 +1,13 @@
+{
+  "name": "ship-ai",
+  "owner": {
+    "name": "Ship AI"
+  },
+  "plugins": [
+    {
+      "name": "ship-ai-product-team",
+      "source": ".",
+      "description": "Full product team skills and verified Cloud handoff."
+    }
+  ]
+}

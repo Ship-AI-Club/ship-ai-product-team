@@ -1,0 +1,23 @@
+{
+  "name": "business-site-starter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "configure": "node scripts/configure.mjs",
+    "check": "npm run verify:design && node scripts/configure.mjs --check && node --test tests/*.test.mjs",
+    "verify:design": "node scripts/verify-design-skills.mjs",
+    "prebuild": "npm run verify:design"
+  },
+  "dependencies": {
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}

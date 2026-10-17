@@ -1,0 +1,303 @@
+{
+  "roles": [
+    "designer",
+    "frontend"
+  ],
+  "instructions": "Product Designer and Frontend Engineer use the same actual design skill library, versions and reference files. Both load YC Interface Craft with all seven supplied files; Intentional UI Design; Illustration Design Grammar; Emil design engineering and relevant animation skills; frontend-design; product-marketing; lead-magnets; copywriting; copy-editing; and conversion guidance. Keep the full files available in the shared project. A link or summary is not a loaded skill. Use design-skill-library.json to compare file hashes and preserve licenses. Read the instructions relevant to the current web task; do not load unrelated native-app guidance. Frontend keeps its engineering, SEO, build and test skills as well. It implements the selected type, spacing, color, imagery, interaction and motion rules with the Designer. Do not invent a new direction or repeat exploration after approval. Record the loaded paths, versions and hashes in team evidence and send an acknowledgment to the PM. Review the actual implementation together and fix differences before owner review.",
+  "skills": [
+    "yc-interface-craft",
+    "intentional-ui-design",
+    "illustration-design-grammar",
+    "emil-design-eng",
+    "frontend-design",
+    "product-marketing",
+    "lead-magnets",
+    "copywriting",
+    "copy-editing",
+    "cro",
+    "animate",
+    "animation-vocabulary",
+    "animation-performance",
+    "review-animations",
+    "find-animation-opportunities",
+    "improve-animations",
+    "pick-ui-library",
+    "prototype",
+    "break-ui",
+    "ask-sonner",
+    "workshop-owner-language"
+  ],
+  "files": [
+    {
+      "skill": "yc-interface-craft",
+      "path": ".agents/skills/yc-interface-craft/SKILL.md",
+      "sha256": "8cf5e799a359faf9c63f466622e55571cd3067c67126879e95775565aac9944e"
+    },
+    {
+      "skill": "yc-interface-craft",
+      "path": ".agents/skills/yc-interface-craft/agents/openai.yaml",
+      "sha256": "6097e47d53640867b64aa4fe9617aca3db9157149eabbd27485dc271fb3b2e85"
+    },
+    {
+      "skill": "yc-interface-craft",
+      "path": ".agents/skills/yc-interface-craft/references/company-index.json",
+      "sha256": "4c239ff4cdb3af706eb4b7cb700bd3162fbf64bf732453504f1657bbfead6eb6"
+    },
+    {
+      "skill": "yc-interface-craft",
+      "path": ".agents/skills/yc-interface-craft/references/direction-workshop.md",
+      "sha256": "dbe414216e26b2429ca10f5725d7021b4c36b1e4ed07e93dabd52e6dac4aa45f"
+    },
+    {
+      "skill": "yc-interface-craft",
+      "path": ".agents/skills/yc-interface-craft/references/motion-and-quality.md",
+      "sha256": "d92a49dadf7d29bdc285a64dc9c77d86f1f3e00d39ae7cfc8670bdaff1302b3a"
+    },
+    {
+      "skill": "yc-interface-craft",
+      "path": ".agents/skills/yc-interface-craft/references/research-and-examples.md",
+      "sha256": "7bf70bb40a363551161416764909b1ff7fbf7f7a2bfb597525569854d7200a1d"
+    },
+    {
+      "skill": "yc-interface-craft",
+      "path": ".agents/skills/yc-interface-craft/references/system-and-surfaces.md",
+      "sha256": "355c2a9265d30e941b48976fc25ae5da7ee1e6d07769e0e92e2d53705aade804"
+    },
+    {
+      "skill": "intentional-ui-design",
+      "path": ".agents/skills/intentional-ui-design/SKILL.md",
+      "sha256": "b1967540ca5a70d00844a8a70c9f89e1cfe6ae20647fe93d5700c4fc64d81b0c"
+    },
+    {
+      "skill": "illustration-design-grammar",
+      "path": ".agents/skills/illustration-design-grammar/SKILL.md",
+      "sha256": "eeeea0ae257b38baf6707b4ee29b52cf8a984f6a307bf8f2aaa14f033506c21b"
+    },
+    {
+      "skill": "emil-design-eng",
+      "path": ".agents/skills/emil-design-eng/SKILL.md",
+      "sha256": "ffbe68e6007fb42cb8149f089b400a1ca007d59ba23e8948e2be4476f3175939"
+    },
+    {
+      "skill": "frontend-design",
+      "path": ".agents/skills/frontend-design/LICENSE.txt",
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    {
+      "skill": "frontend-design",
+      "path": ".agents/skills/frontend-design/SKILL.md",
+      "sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3"
+    },
+    {
+      "skill": "product-marketing",
+      "path": ".agents/skills/product-marketing/SKILL.md",
+      "sha256": "19ece0fa75c72a5a8b6e90db80f506586f54cc93bae6bffbb1bd2ef4ae7d603c"
+    },
+    {
+      "skill": "product-marketing",
+      "path": ".agents/skills/product-marketing/evals/evals.json",
+      "sha256": "0c6599b88f50ec1be91096a36ba6c5a15cf8312151394e3469e5ddb991b19afb"
+    },
+    {
+      "skill": "product-marketing",
+      "path": ".agents/skills/product-marketing/references/brand-voice.md",
+      "sha256": "932f3453db2761f03050792e39800150495dab449750b40913a4314ea97e7672"
+    },
+    {
+      "skill": "lead-magnets",
+      "path": ".agents/skills/lead-magnets/SKILL.md",
+      "sha256": "190a64c72a9a36fdde3a6b0888798e1bb9dd4e7406b00a6bbf90dba5e64c047b"
+    },
+    {
+      "skill": "lead-magnets",
+      "path": ".agents/skills/lead-magnets/evals/evals.json",
+      "sha256": "459b4b4f69f5717f23f3029597026c07f1201978e0bc1923f918501da3fe7a6f"
+    },
+    {
+      "skill": "lead-magnets",
+      "path": ".agents/skills/lead-magnets/references/benchmarks.md",
+      "sha256": "becdf4bcde17e788ead10794c797294548c712ea1074e042336da93433a61187"
+    },
+    {
+      "skill": "lead-magnets",
+      "path": ".agents/skills/lead-magnets/references/content-to-skill-corpus-design.md",
+      "sha256": "a6db00a8298b2ce52965c40b57c01120a0f9ff4caf5ca55ede81bc2f242bae56"
+    },
+    {
+      "skill": "lead-magnets",
+      "path": ".agents/skills/lead-magnets/references/content-to-skill-release.md",
+      "sha256": "87bcc9218232b73b824e8cebac1e64deacffa755779ce2cc0db799c92873c891"
+    },
+    {
+      "skill": "lead-magnets",
+      "path": ".agents/skills/lead-magnets/references/content-to-skill.md",
+      "sha256": "dacbfff6d538ee37167f20034165dbf3a273d8bd1607def6450c649e40ebafa9"
+    },
+    {
+      "skill": "lead-magnets",
+      "path": ".agents/skills/lead-magnets/references/format-guide.md",
+      "sha256": "401f65d709cefbd7ee2df11273e0b616ec50e37e71d914556c800067fdcdef8e"
+    },
+    {
+      "skill": "copywriting",
+      "path": ".agents/skills/copywriting/SKILL.md",
+      "sha256": "13c580c2432a4499e9dfdcf5d553df7aa6589e90cf5bd869fb4fbde5caf9f567"
+    },
+    {
+      "skill": "copywriting",
+      "path": ".agents/skills/copywriting/evals/evals.json",
+      "sha256": "ccec86052a0edd8646d0e50e63c08e0e971f443d8f6e9178843a1629f79efdb0"
+    },
+    {
+      "skill": "copywriting",
+      "path": ".agents/skills/copywriting/references/ai-tells.md",
+      "sha256": "b98c3a19b3a75c714d69e80a0076e4c07244b0e833c2ce81ff2631224fb7f7b2"
+    },
+    {
+      "skill": "copywriting",
+      "path": ".agents/skills/copywriting/references/copy-frameworks.md",
+      "sha256": "352122944bf9e891ceb0e003adce41591d111e9d97057700626249919dfe430d"
+    },
+    {
+      "skill": "copywriting",
+      "path": ".agents/skills/copywriting/references/natural-transitions.md",
+      "sha256": "9bd61b0de5be2c4de4ce130c68236b4f290b12737823827a458bb2b4c8584683"
+    },
+    {
+      "skill": "copy-editing",
+      "path": ".agents/skills/copy-editing/SKILL.md",
+      "sha256": "2a072606d9d5662509ea6ef62c65719487dcb68876acab9286bde4d1af5c030f"
+    },
+    {
+      "skill": "copy-editing",
+      "path": ".agents/skills/copy-editing/evals/evals.json",
+      "sha256": "cc18c9f51094058759267d465cfcc50da65f248f66b923326781aa642d622ca7"
+    },
+    {
+      "skill": "copy-editing",
+      "path": ".agents/skills/copy-editing/references/checklist.md",
+      "sha256": "4cf94c922286223681fc53721fcc65ae7299f1e36e797e7397d369d674580c60"
+    },
+    {
+      "skill": "copy-editing",
+      "path": ".agents/skills/copy-editing/references/content-refresh.md",
+      "sha256": "ba73cdf278fe6b552eee27eb1452494f11f9d17ef67d720657e0982f76fb961b"
+    },
+    {
+      "skill": "copy-editing",
+      "path": ".agents/skills/copy-editing/references/plain-english-alternatives.md",
+      "sha256": "df4f820d4c63ae8a517c64a243c101658352cd07d002355bf3c97de0a00f3775"
+    },
+    {
+      "skill": "cro",
+      "path": ".agents/skills/cro/SKILL.md",
+      "sha256": "6e172cc38178c800ff41ceb097f36c6a1db8035fb88a1fee53043f8ec38a6f35"
+    },
+    {
+      "skill": "cro",
+      "path": ".agents/skills/cro/evals/evals.json",
+      "sha256": "62f3003602836e2b49d797ca582e7703629a6b07b131eb77b51b2bb39fe65775"
+    },
+    {
+      "skill": "cro",
+      "path": ".agents/skills/cro/references/experiments.md",
+      "sha256": "bbcc356c0af36cfaa4556bf9e929deac30c65cafb37f909d7c51d4777fe254ca"
+    },
+    {
+      "skill": "cro",
+      "path": ".agents/skills/cro/references/form.md",
+      "sha256": "49b8f29b3da1ae6510572288cad3eb1f3d43a969373443be98b38639746587e6"
+    },
+    {
+      "skill": "animate",
+      "path": ".agents/skills/animate/RECIPES.md",
+      "sha256": "21ff63d84391db8d96ecdf9170095f55a42c836ccc36fd3269c4772bab031ba2"
+    },
+    {
+      "skill": "animate",
+      "path": ".agents/skills/animate/SKILL.md",
+      "sha256": "b8ede161270458e6ae2e45e8a1985373515d4c63de5568ddb0f9012d7634356c"
+    },
+    {
+      "skill": "animation-vocabulary",
+      "path": ".agents/skills/animation-vocabulary/SKILL.md",
+      "sha256": "40d2b27adfdfeb0570a9f20e7d0255109d9233c50603878bcd0dcd04c923fd94"
+    },
+    {
+      "skill": "animation-performance",
+      "path": ".agents/skills/animation-performance/SKILL.md",
+      "sha256": "ceb9dd3fe912615830f725a0120ccf8d012d15a6218001a5cd6c15d38e39a957"
+    },
+    {
+      "skill": "review-animations",
+      "path": ".agents/skills/review-animations/SKILL.md",
+      "sha256": "6ff590d29e436766135aa3d137be1fac2a867165c7257fc315b189361f1873af"
+    },
+    {
+      "skill": "review-animations",
+      "path": ".agents/skills/review-animations/STANDARDS.md",
+      "sha256": "e7d3605034acda54ca13e43aec9e64d65b53de20f75b11b8d694e373012fbe07"
+    },
+    {
+      "skill": "find-animation-opportunities",
+      "path": ".agents/skills/find-animation-opportunities/SKILL.md",
+      "sha256": "d52a377819b84a71930f0c822cfe2849f40301605a2d5c7eccbfa3b257700df2"
+    },
+    {
+      "skill": "improve-animations",
+      "path": ".agents/skills/improve-animations/AUDIT.md",
+      "sha256": "551c8473e20e5f4774680bc24d45e1c68e50992582720905c6b077756b7b5a55"
+    },
+    {
+      "skill": "improve-animations",
+      "path": ".agents/skills/improve-animations/PLAN-TEMPLATE.md",
+      "sha256": "0a08ac8e23fd2082d7ffb86aeed7b789de77328c3cf874b16f1a755f2ef0a6ad"
+    },
+    {
+      "skill": "improve-animations",
+      "path": ".agents/skills/improve-animations/SKILL.md",
+      "sha256": "73962447464433476343e2c12cd08ab39cc99a9e5f3c118c5fb54ed897574ef6"
+    },
+    {
+      "skill": "pick-ui-library",
+      "path": ".agents/skills/pick-ui-library/SKILL.md",
+      "sha256": "675fdce308683256ed617351a9b74d23457a5fbd0a562d9831b9c764b8c5e682"
+    },
+    {
+      "skill": "prototype",
+      "path": ".agents/skills/prototype/PICKER.md",
+      "sha256": "31a55eec94715cc79942e91e172e539e3031dcd5e2e5ee7c1446cf2caee960a6"
+    },
+    {
+      "skill": "prototype",
+      "path": ".agents/skills/prototype/SKILL.md",
+      "sha256": "bba39c955eb1871c5a02733976ceec5d0324198e0812e667604756489c89f7b9"
+    },
+    {
+      "skill": "break-ui",
+      "path": ".agents/skills/break-ui/CATALOG.md",
+      "sha256": "7358efcc6bb48e35187be1c064cf60022dcb18c72c18fab58b606dfc5f421f15"
+    },
+    {
+      "skill": "break-ui",
+      "path": ".agents/skills/break-ui/SKILL.md",
+      "sha256": "e7eec1d70ac56a04255e9c0dbe98084ea3d544cc04aaad34f32c95d6fa9dff5e"
+    },
+    {
+      "skill": "ask-sonner",
+      "path": ".agents/skills/ask-sonner/API.md",
+      "sha256": "4bb06f482c5757529e3d7a672a30fbeed42d24919a63e2571384a9ce1549aa7f"
+    },
+    {
+      "skill": "ask-sonner",
+      "path": ".agents/skills/ask-sonner/SKILL.md",
+      "sha256": "39f3ee185b3aa2cf70a689052ff078953ce7ba5915ed7a9391d232e9d4dcf57f"
+    },
+    {
+      "skill": "workshop-owner-language",
+      "path": ".agents/skills/workshop-owner-language/SKILL.md",
+      "sha256": "0ca29d37177342ef48a1261181c5f518a779f1883e81a5239f6f72632c616a3a"
+    }
+  ],
+  "relativeTo": "starter root"
+}
