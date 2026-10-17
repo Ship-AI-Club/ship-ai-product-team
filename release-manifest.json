@@ -110,8 +110,8 @@
     },
     {
       "path": "assets/business-site-starter/ENGINEERING-SETUP.md",
-      "sha256": "f3ffadff887dd64cfc24f515624a55969ff2c06dd6411f59039ef1545338485e",
-      "bytes": 3447
+      "sha256": "f54edcbe8503a2d78a65503b029aa18fcca0333ed6a7ef67a84ec44f9ceedffc",
+      "bytes": 3748
     },
     {
       "path": "assets/business-site-starter/README.md",
@@ -310,18 +310,18 @@
     },
     {
       "path": "roles/backend.md",
-      "sha256": "2db741c2cf40aa66ddaf1a673dcb98e187dda0909c9d27e13e279d4f0160f7db",
-      "bytes": 10516
+      "sha256": "02d727d100d22008a3f53af0dc64673bac26fdfd362d266d9a44463b7a64d905",
+      "bytes": 10849
     },
     {
       "path": "roles/designer.md",
-      "sha256": "5d05c83575375e9ebfb551eb3fa1d70351a03483c9ea66ab2ff87025a7b63bca",
-      "bytes": 10178
+      "sha256": "a800984459a1758fcb8de420b771f0905b3c0b17519afd9023ca7443c3ff0f9f",
+      "bytes": 10291
     },
     {
       "path": "roles/frontend.md",
-      "sha256": "677d0abfac52c3af3cd3ef799f1ff1e40ef4ae94377eb3b90161ee4195cf5796",
-      "bytes": 13049
+      "sha256": "40a3804ce5de8a40c2368039f1e32d89942c30a156db66b782087072a7bee6ea",
+      "bytes": 13382
     },
     {
       "path": "roles/marketing-performance.md",
@@ -345,13 +345,13 @@
     },
     {
       "path": "roles/pm.md",
-      "sha256": "b2ea07165abd3d7435785608703248891fd0007227ddabd72931f50ef1309625",
-      "bytes": 9432
+      "sha256": "3da7ac858e56a8e8b7cb0a32cd2d7040e501996bc8932b0af155463cf8a328ae",
+      "bytes": 9545
     },
     {
       "path": "roles/research.md",
-      "sha256": "b6f92509ca34da9f3949597f721edbf13aab9c5948b735682a81c115d4ce9519",
-      "bytes": 8152
+      "sha256": "db9f9be4f9474ee4ca3896ca0d7d70c2bff4dbc665222b783e6f418bc309e66c",
+      "bytes": 8265
     },
     {
       "path": "scripts/prepare-project.mjs",
@@ -730,8 +730,8 @@
     },
     {
       "path": "skills/cursor-cloud-build/SKILL.md",
-      "sha256": "818ce85dbf75a67d303d466ac20c6631870061578a865fa37ce1dae0ad474391",
-      "bytes": 3768
+      "sha256": "194ee26ee9611e693109f0f3c9dc8963c7b048ff39cef82b720bb761fd8e26cd",
+      "bytes": 3988
     },
     {
       "path": "skills/emails/SKILL.md",
@@ -1005,18 +1005,18 @@
     },
     {
       "path": "skills/shared-design-library/SKILL.md",
-      "sha256": "0e66009678f44e3fcb09e15e6a99ab1e69f625ac91fade7a2fdff9ca703c1274",
-      "bytes": 2201
+      "sha256": "582a347c9dd27948e82f5533166c68803816837c91d418352f0c8b2ab57b84a8",
+      "bytes": 2080
     },
     {
       "path": "skills/ship-ai-backend-engineer/SKILL.md",
-      "sha256": "94dfb7e5cd0a8044d1f2fe223d181f48a89eba25dcc17c7e2e4af2f5c9f794bd",
-      "bytes": 3462
+      "sha256": "101e19efcd727c848d943121790f2fa1da5720b8f4a62d84f9a8135b98b5fd77",
+      "bytes": 3682
     },
     {
       "path": "skills/ship-ai-frontend-engineer/SKILL.md",
-      "sha256": "46b332b7883afb7ebac46f1564ac018e5beaf49faae00cb15e9ffc64eab5b943",
-      "bytes": 6002
+      "sha256": "53d7cee9f87797b45af15a0b53590654bdb24294012f275cce0443c67851a056",
+      "bytes": 6222
     },
     {
       "path": "skills/ship-ai-product-designer/SKILL.md",
@@ -1195,28 +1195,28 @@
     },
     {
       "path": "templates/backend.json",
-      "sha256": "8436973bf7aa5a9e44c3991657b14cee2f189b7f118cf829487a5d67dc2f1fa5",
-      "bytes": 10783
+      "sha256": "3b5912770ab4bb1a653ca3689d46a66d0f482219cd11e6ccda1e4580940be246",
+      "bytes": 11116
     },
     {
       "path": "templates/designer.json",
-      "sha256": "b379069ef9573fb149868dcb400547bbfd452b362dcd06e8dac00d4673d70bed",
-      "bytes": 10439
+      "sha256": "5e0d6aca49d55cff91110d8cd5352f4d3f5f3b6ba9d20e30ccc1710fb5ab0881",
+      "bytes": 10552
     },
     {
       "path": "templates/frontend.json",
-      "sha256": "67a910dc4ad5b24e8cfa9d6889c30e9d75f616840cb207761c046a4c8d69f9e0",
-      "bytes": 13320
+      "sha256": "c0712cd3086678c979849c8e6e916a94fb7a3614181c37601a0ba3b956192cca",
+      "bytes": 13653
     },
     {
       "path": "templates/pm.json",
-      "sha256": "9ef28b4436541b3b3e13a78c054f22b26d130fd93126a2ed072d489ad532337e",
-      "bytes": 9699
+      "sha256": "c9f5bb520228a8d6348c33cd57e09f6828d8bd29afb957fef8a28a2bcc8d3e42",
+      "bytes": 9812
     },
     {
       "path": "templates/research.json",
-      "sha256": "ae447c59875173ed6986c2a8049337ea3b50efd148e311569a47fae2badf8e99",
-      "bytes": 8409
+      "sha256": "e2993b0ab2b000b638ed2cdcb074ddecba06224b02db86a435f1c7af740ec9f4",
+      "bytes": 8522
     },
     {
       "path": "tests/plugin.test.mjs",

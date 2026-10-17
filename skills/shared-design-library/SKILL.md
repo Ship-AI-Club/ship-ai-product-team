@@ -1,31 +1,28 @@
 ---
 name: shared-design-library
-description: Load and verify the complete shared design library for Product Designer and Frontend before work.
+description: Load and verify the full shared design files for Product Designer, Frontend and the assigned Cloud run.
 ---
 
 # Shared design library
 
-Use the same actual library for Product Designer, Frontend Engineer and the assigned Cursor Cloud agent.
-First check the current project. Reuse its complete, verified files. Never overwrite approved source to repeat setup.
-Inside an assigned Cloud run, verify the supplied library before downloading anything again.
+Use the pinned Ship AI plugin release as the source. Do not replace it with an older public workshop kit.
+Read the installed plugin role map and its complete skill folders. Run the plugin file verifier.
+For a new site, use the plugin preparation script to copy the starter and all full skills into the project.
+For an existing project, preserve approved source. Compare versions and add only the required missing files.
 
-1. Download `https://www.shipai.club/hackathon-product-team/kit-archives.json`.
-2. Download the team kit at its exact listed URL. Match its filename, byte count and SHA256.
-3. Extract into the current participant-owned project. Keep hidden files, references and licenses.
-4. Read the kit README, the role instructions and starter/AGENTS.md.
-5. In the starter or copied site, verify every path and SHA256 in design-skill-library.json.
-6. Use `npm run verify:design` if available. Otherwise audit the complete manifest with a local script.
-7. Stop on missing, duplicate, reduced or changed library files. Restore the approved source before work.
-8. Copy the complete library and manifests into the actual Cloud repository or upload.
-9. Repeat the audit inside Cloud. Save its result as evidence/design-skills.json.
-10. Read applicable actual skills and guidance. Record read paths in evidence/design-skills-read.md.
+1. Verify every design path and SHA256 in the project's design-skill-library.json.
+2. Run npm run verify:design. Run npm run verify:skills when the full plugin copy provides it.
+3. Stop on missing, changed, duplicate or reduced library files. Restore the pinned source before work.
+4. Read the actual applicable design, copy and product guidance. Follow the relevant reference files.
+5. Log paths actually read in evidence/design-skills-read.md. File integrity alone does not prove reading.
+6. Include hidden .agents/skills, .cursor rules, manifests, references and licenses in the actual Cloud handoff.
+7. Repeat both file audits inside Cloud. Require acknowledgment of the current brief and approved direction.
+8. Designer and Frontend review the running desktop and phone site and its complete main task.
 
-The shared library contains 21 design skill entries and 54 files. YC Interface Craft has seven supplied files.
-The library includes Intentional UI Design, Illustration Design Grammar, Emil design engineering, frontend-design, product marketing, copy and conversion guidance.
-Use design-skill-library.json for the full list. Preserve every reference, source and license.
-Read relevant web guidance; do not load unrelated native-app guidance without a reason.
-Keep the full YC research index available and read the matching records.
-
-A link, summary or skill card count does not provide the actual Cloud files.
-A file audit proves presence and integrity. It does not prove that an agent read or applied the instructions.
-Designer must review the running site and its main task before owner review.
+The original design subset has 21 skill entries and 54 files. The full Ship AI release has 47 skill entries.
+PStack has its own separate 54-skill catalog. Do not combine these counts or infer an export cap.
+Keep all seven supplied YC Interface Craft files and the full research index available.
+Read matching research records; preserve dates, attribution and existing brand equity.
+Use the approved direction. Do not restart exploration after approval or copy another company's identity.
+Read web guidance for web work. Keep native-app skills available without loading them for an unrelated task.
+A link, summary or template card does not supply the full files to Cloud.
