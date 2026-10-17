@@ -1195,28 +1195,28 @@
     },
     {
       "path": "templates/backend.json",
-      "sha256": "3b5912770ab4bb1a653ca3689d46a66d0f482219cd11e6ccda1e4580940be246",
-      "bytes": 11116
+      "sha256": "cc68429c12ef7e240d8865de7c1cc611d2d4fc65c34d0c48b9d487fe43acbe52",
+      "bytes": 2080
     },
     {
       "path": "templates/designer.json",
-      "sha256": "5e0d6aca49d55cff91110d8cd5352f4d3f5f3b6ba9d20e30ccc1710fb5ab0881",
-      "bytes": 10552
+      "sha256": "67962f5317aaa910ec4fe562c041964053568eedf6564712e712ca7a7633d7de",
+      "bytes": 2006
     },
     {
       "path": "templates/frontend.json",
-      "sha256": "c0712cd3086678c979849c8e6e916a94fb7a3614181c37601a0ba3b956192cca",
-      "bytes": 13653
+      "sha256": "51105749949ce0a4266aa9ff6c3474d8c5c1f115f643ad442d7e936ebca44210",
+      "bytes": 2211
     },
     {
       "path": "templates/pm.json",
-      "sha256": "c9f5bb520228a8d6348c33cd57e09f6828d8bd29afb957fef8a28a2bcc8d3e42",
-      "bytes": 9812
+      "sha256": "364d24569da08f437243967162b488060342fd081438a0c01d4a66e500802362",
+      "bytes": 2138
     },
     {
       "path": "templates/research.json",
-      "sha256": "e2993b0ab2b000b638ed2cdcb074ddecba06224b02db86a435f1c7af740ec9f4",
-      "bytes": 8522
+      "sha256": "5c848010d9b3ff06bd4b9f4d6b7ced64096134f39f51307ad244e834ff595f02",
+      "bytes": 1903
     },
     {
       "path": "tests/plugin.test.mjs",
