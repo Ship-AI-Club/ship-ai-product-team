@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "ship-ai-product-team",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "skills": [
     "about-page",
     "ad-creative",
@@ -255,8 +255,8 @@
     },
     {
       "path": "assets/business-site-starter/tests/brief.test.mjs",
-      "sha256": "71f8959c8a8838d674bcdb9cffd5f14be777fc5ccfb234ef705c40ea3043c253",
-      "bytes": 2316
+      "sha256": "a737a8ccc709a5418950a15ff1353bc78ef8a05a5f51b6c6b4903a56ca14cdfc",
+      "bytes": 2344
     },
     {
       "path": "assets/business-site-starter/tests/design-skills.test.mjs",
@@ -265,8 +265,8 @@
     },
     {
       "path": "assets/business-site-starter/tests/model-choice.test.mjs",
-      "sha256": "1b5e89ff81a6f9d88854a00c0c3cdc98c13ab3bc0079c658cfa9a6f1ccd4c997",
-      "bytes": 823
+      "sha256": "a07a1abe728a599949d105fc2bb75d3e73d3bffd0052c4f9ec3b83795af58dbf",
+      "bytes": 832
     },
     {
       "path": "design-skill-library.json",
@@ -295,12 +295,12 @@
     },
     {
       "path": "package.json",
-      "sha256": "daa1c4b2d0f61f5163d780971c3101e13d8d8b9ef4258cf2cf6a1246e23e30aa",
+      "sha256": "2f0c45fc60023282c1dfe08e9c3d7dfcc8a7c6b1f53d1a212435bc3a0108f460",
       "bytes": 196
     },
     {
       "path": "plugin.json",
-      "sha256": "999ac3b81db3660dec381472219f860f0824673754d5c70b8dd860085025f8d3",
+      "sha256": "5f8cbf074d1d5d672eedcc69c22a5a7b0b6793593833d582f5fa43b452522a7b",
       "bytes": 685
     },
     {
@@ -1220,8 +1220,8 @@
     },
     {
       "path": "tests/plugin.test.mjs",
-      "sha256": "16c9fccad3d564bf23c7a02b6f62262c3fe994a6d8597c8a9022181f5bdc3228",
-      "bytes": 2429
+      "sha256": "31fed815aa2e2bee2fc65c682b1b1e872908c63f6c833a5ffa097aedefe59152",
+      "bytes": 3349
     }
   ],
   "proofScope": "Presence and byte integrity; not proof of installation, reading, application or design quality."

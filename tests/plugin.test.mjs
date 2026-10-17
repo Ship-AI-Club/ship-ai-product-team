@@ -32,3 +32,16 @@ test('new project has full design library and setup choice; existing source is n
   assert.throws(()=>execFileSync(process.execPath,['scripts/verify-project-skills.mjs'],{cwd:target,stdio:'pipe'}));
  }finally{await rm(temp,{recursive:true,force:true});}
 });
+test('contract tests still pass after the owner supplies an approved priced business brief',async()=>{
+ const temp=await mkdtemp(resolve(tmpdir(),'ship-ai-owner-brief-'));const target=resolve(temp,'site');
+ try{
+  execFileSync(process.execPath,[resolve(root,'scripts/prepare-project.mjs'),'--target',target]);
+  const brief=JSON.parse(await readFile(resolve(target,'examples/b2b.json')));
+  brief.business.pricing={model:'fixed',display:'Test assessment: $1,500',approved:true};
+  brief.setup={buildModel:'opus-5.5',effort:'medium'};
+  assert.notEqual(brief.business.pricing.model,'unknown');
+  assert.equal(brief.positioning.status,'approved');
+  await writeFile(resolve(target,'brief/project.json'),JSON.stringify(brief,null,2)+'\n');
+  execFileSync(process.execPath,['--test','tests/brief.test.mjs','tests/model-choice.test.mjs'],{cwd:target,stdio:'pipe'});
+ }finally{await rm(temp,{recursive:true,force:true});}
+});
