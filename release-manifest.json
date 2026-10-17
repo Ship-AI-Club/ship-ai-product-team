@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "ship-ai-product-team",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "skills": [
     "about-page",
     "ad-creative",
@@ -295,12 +295,12 @@
     },
     {
       "path": "package.json",
-      "sha256": "87fa361e1e8003b25fdf6fc368846b720bb991de3a38a2fc6f7f53f8f7ae057b",
+      "sha256": "daa1c4b2d0f61f5163d780971c3101e13d8d8b9ef4258cf2cf6a1246e23e30aa",
       "bytes": 196
     },
     {
       "path": "plugin.json",
-      "sha256": "20d75a8813925a376155b78606df5450838560249954c36e3cd8f3adbdaf42e0",
+      "sha256": "999ac3b81db3660dec381472219f860f0824673754d5c70b8dd860085025f8d3",
       "bytes": 685
     },
     {
