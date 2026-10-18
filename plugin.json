@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ship-ai-product-team",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A PM-led product team with full design, research, copy and engineering skills. Uses PStack and a verified Cursor Cloud handoff.",
   "author": {
     "name": "Ship AI",

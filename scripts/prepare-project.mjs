@@ -18,6 +18,7 @@ for(const name of await readdir(resolve(root,'assets/business-site-starter'))){
 }
 await cp(resolve(root,'skills'),resolve(target,'.agents/skills'),{recursive:true,errorOnExist:true,force:false});
 await cp(resolve(root,'role-map.json'),resolve(target,'.agents/role-map.json'));
+for(const name of ['LICENSE','THIRD_PARTY_NOTICES.md','licenses'])await cp(resolve(root,name),resolve(target,'.agents',name),{recursive:true,errorOnExist:true,force:false});
 const release=JSON.parse(await readFile(resolve(root,'release-manifest.json'),'utf8'));
 const manifest={version:release.version,expectedSkills:release.skills,files:release.files.filter(f=>f.path.startsWith('skills/')).map(f=>({...f,path:`.agents/${f.path}`}))};
 await writeFile(resolve(target,'.agents/ship-ai-skills.json'),JSON.stringify(manifest,null,2)+'\n');
@@ -26,6 +27,7 @@ const pkg=JSON.parse(await readFile(resolve(target,'package.json'),'utf8'));
 pkg.scripts['verify:skills']='node scripts/verify-project-skills.mjs';
 pkg.scripts.check='npm run verify:skills && '+pkg.scripts.check;
 pkg.scripts.prebuild='npm run verify:skills && '+pkg.scripts.prebuild;
+pkg.scripts['build:review']='npm run verify:skills && '+pkg.scripts['build:review'];
 await writeFile(resolve(target,'package.json'),JSON.stringify(pkg,null,2)+'\n');
 await mkdir(resolve(target,'evidence'),{recursive:true});
 await writeFile(resolve(target,'evidence/plugin-source.json'),JSON.stringify({...audit,pluginManifestSha256:createHash('sha256').update(await readFile(resolve(root,'plugin.json'))).digest('hex')},null,2)+'\n');

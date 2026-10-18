@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-16",
+  "checkedAt": "2026-10-18",
   "skillSources": [
     {
       "repository": "https://github.com/emilkowalski/skills",
@@ -124,8 +124,23 @@
           "file": "skills/write-swift/SKILL.md",
           "source": "https://raw.githubusercontent.com/emilkowalski/skills/2d228630ba1446365f614a108cb8252f1feda202/skills/write-swift/SKILL.md",
           "sha256": "16a4b6adb74e338e55e704ce5753ad54d825438b8a63930eeaede9f3c04c9447"
+        },
+        {
+          "file": "skills/emil-design-eng/LICENSE",
+          "copyOf": "skills/_licenses/emilkowalski/LICENSE",
+          "sha256": "4ff5bdb7887ec1435c9cab0e8d1a7caee704d894d65c2a008ccc68b1cc2f260b"
+        },
+        {
+          "file": "skills/review-animations/LICENSE",
+          "copyOf": "skills/_licenses/emilkowalski/LICENSE",
+          "sha256": "4ff5bdb7887ec1435c9cab0e8d1a7caee704d894d65c2a008ccc68b1cc2f260b"
         }
-      ]
+      ],
+      "version": "2d228630ba1446365f614a108cb8252f1feda202",
+      "license": {
+        "spdx": "MIT",
+        "file": "skills/_licenses/emilkowalski/LICENSE"
+      }
     },
     {
       "repository": "https://github.com/anthropics/skills",
@@ -146,7 +161,13 @@
           "source": "https://raw.githubusercontent.com/anthropics/skills/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/frontend-design/SKILL.md",
           "sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3"
         }
-      ]
+      ],
+      "version": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "license": {
+        "spdx": "Apache-2.0",
+        "file": "skills/frontend-design/LICENSE.txt",
+        "notices": "skills/_licenses/anthropics/THIRD_PARTY_NOTICES.md"
+      }
     },
     {
       "repository": "https://github.com/coreyhaines31/marketingskills",
@@ -161,6 +182,11 @@
           "file": "skills/ad-creative/SKILL.md",
           "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/ad-creative/SKILL.md",
           "sha256": "973244b10730f514ea1ec2c0a4f132d570e55cd3298392b4fc15f8227e5228ba"
+        },
+        {
+          "file": "skills/ad-creative/assets/creative-review-template.html",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/ad-creative/assets/creative-review-template.html",
+          "sha256": "0ca7cce4fa809235aee776606205925d8dc01bde8a8325e2af7197d86394d3b7"
         },
         {
           "file": "skills/ad-creative/evals/evals.json",
@@ -318,6 +344,26 @@
           "sha256": "285fec5c1671c9cc1a4cdfbcf06d8a54a022cbad52693941457d90e1f2c5f503"
         },
         {
+          "file": "skills/competitor-profiling/SKILL.md",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/competitor-profiling/SKILL.md",
+          "sha256": "ed74677eb8dfe4a3c97ccb0f7f1a1070dc6aed1d93836ed9322d99d86e558928"
+        },
+        {
+          "file": "skills/competitor-profiling/evals/evals.json",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/competitor-profiling/evals/evals.json",
+          "sha256": "89e7a8dee7c688adde18f2885ee4b52011faab29255f182c401b19fe78caf264"
+        },
+        {
+          "file": "skills/competitor-profiling/references/templates.md",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/competitor-profiling/references/templates.md",
+          "sha256": "710d78cb519012eb7e39f63643e22d7b9026c91c569262b44c45535c10717a91"
+        },
+        {
+          "file": "skills/competitor-profiling/references/tool-reference.md",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/competitor-profiling/references/tool-reference.md",
+          "sha256": "fda64910bc1b3a2bc7df21c15701220849b4b79a58a51f9d3ccae1b7311dbd79"
+        },
+        {
           "file": "skills/content-strategy/SKILL.md",
           "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/content-strategy/SKILL.md",
           "sha256": "dce9f4027ae129691e92623541a360bee9356137a7eecf68afa95674af118e68"
@@ -406,6 +452,26 @@
           "file": "skills/cro/references/form.md",
           "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/cro/references/form.md",
           "sha256": "49b8f29b3da1ae6510572288cad3eb1f3d43a969373443be98b38639746587e6"
+        },
+        {
+          "file": "skills/customer-research/SKILL.md",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/customer-research/SKILL.md",
+          "sha256": "905e65e67268448d88b3b96cf045c6b3615cdd87c1060e129b148a31aa627669"
+        },
+        {
+          "file": "skills/customer-research/evals/evals.json",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/customer-research/evals/evals.json",
+          "sha256": "fc8a15d12e582b55fa52ad27925594ab796ebd6a8ea13fed13722f97e4c51f01"
+        },
+        {
+          "file": "skills/customer-research/references/interviews-and-surveys.md",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/customer-research/references/interviews-and-surveys.md",
+          "sha256": "56adecdc40af1242464937100349fc1a161627394909551720494bc5ee537076"
+        },
+        {
+          "file": "skills/customer-research/references/source-guides.md",
+          "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/customer-research/references/source-guides.md",
+          "sha256": "7490a8d04f209d4c8c987530e79d0883a6b42027b86a920fc751cf8ea9904892"
         },
         {
           "file": "skills/emails/SKILL.md",
@@ -656,8 +722,78 @@
           "file": "skills/social/references/x-algorithm.md",
           "source": "https://raw.githubusercontent.com/coreyhaines31/marketingskills/365b412152b9542499ca1439426f7fc3cc92bb65/skills/social/references/x-algorithm.md",
           "sha256": "943b2c5a819aad53ebf62a1652adc47956d6fdf738e18cd98eeb609819a66180"
+        },
+        {
+          "file": "skills/competitor-profiling/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/customer-research/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/ads/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/content-strategy/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/copy-editing/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/copywriting/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/cro/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/lead-magnets/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/product-marketing/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/programmatic-seo/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/schema/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/seo-audit/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
+        },
+        {
+          "file": "skills/signup/LICENSE",
+          "copyOf": "skills/_licenses/coreyhaines31/LICENSE",
+          "sha256": "b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591"
         }
-      ]
+      ],
+      "version": "365b412152b9542499ca1439426f7fc3cc92bb65",
+      "license": {
+        "spdx": "MIT",
+        "file": "skills/_licenses/coreyhaines31/LICENSE"
+      }
     },
     {
       "name": "YC Interface Craft",
@@ -693,29 +829,79 @@
           "file": "skills/yc-interface-craft/references/system-and-surfaces.md",
           "sha256": "355c2a9265d30e941b48976fc25ae5da7ee1e6d07769e0e92e2d53705aade804"
         }
-      ]
+      ],
+      "version": "snapshot 2026-10-16 (archive sha256 ff6fc8935ee1313f54b13bb0901826305d3fcbd46e109aa382d3a64ce1ec408b)",
+      "license": {
+        "spdx": null,
+        "terms": "Supplied by the plugin owner for redistribution in this package. No upstream license file was supplied; attribution preserved, no endorsement implied."
+      }
+    },
+    {
+      "name": "Owner-supplied design skills",
+      "source": "Supplied by the plugin owner with the workshop kit and first packaged in release 1.0.0 (commit 7079062)",
+      "version": "as packaged in 1.0.0, unchanged",
+      "license": {
+        "spdx": null,
+        "terms": "Supplied by the plugin owner for redistribution in this package. No upstream license file was supplied; attribution preserved, no endorsement implied."
+      },
+      "files": [
+        {
+          "file": "skills/illustration-design-grammar/SKILL.md",
+          "sha256": "eeeea0ae257b38baf6707b4ee29b52cf8a984f6a307bf8f2aaa14f033506c21b"
+        },
+        {
+          "file": "skills/intentional-ui-design/SKILL.md",
+          "sha256": "b1967540ca5a70d00844a8a70c9f89e1cfe6ae20647fe93d5700c4fc64d81b0c"
+        }
+      ],
+      "firstPackaged": "2026-10-17"
     }
   ],
   "templateMethods": [
     [
-      "Dr Eggbot \u00b7 Lauren Tan",
+      "Dr Eggbot · Lauren Tan",
       "https://x.ai/bot/marketplace/bots/dr-eggbot-v2"
     ],
     [
-      "PM Bot \u00b7 Ulysses Ng",
+      "PM Bot · Ulysses Ng",
       "https://x.ai/bot/marketplace/bots/pm-bot"
     ],
     [
-      "Lingxi\u2019s Engineer Bot",
+      "Lingxi’s Engineer Bot",
       "https://x.ai/bot/marketplace/bots/engineer-bot"
     ],
     [
-      "Critiquito \u00b7 Manuel Mu\u00f1oz Solera",
+      "Critiquito · Manuel Muñoz Solera",
       "https://x.ai/bot/marketplace/bots/critiquito"
     ],
     [
       "Grok Bot templates",
       "https://x.ai/bot/guides/templates-for-grok-bot"
     ]
-  ]
+  ],
+  "original": {
+    "author": "Ship AI",
+    "license": {
+      "spdx": "MIT",
+      "file": "LICENSE"
+    },
+    "note": "Written for this plugin; not vendored from an upstream source.",
+    "files": [
+      "skills/ship-ai-design-gate/SKILL.md",
+      "skills/README.md",
+      "skills/about-page/SKILL.md",
+      "skills/brief-to-site/SKILL.md",
+      "skills/cursor-cloud-build/SKILL.md",
+      "skills/seo-article/SKILL.md",
+      "skills/shared-design-library/SKILL.md",
+      "skills/ship-ai-backend-engineer/SKILL.md",
+      "skills/ship-ai-frontend-engineer/SKILL.md",
+      "skills/ship-ai-product-designer/SKILL.md",
+      "skills/ship-ai-product-manager/SKILL.md",
+      "skills/ship-ai-product-researcher/SKILL.md",
+      "skills/ship-ai-setup/SKILL.md",
+      "skills/ship-ai-team-workflow/SKILL.md",
+      "skills/workshop-owner-language/SKILL.md"
+    ]
+  }
 }
