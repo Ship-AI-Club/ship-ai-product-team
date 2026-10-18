@@ -27,6 +27,13 @@ The same two sections at 390px: order, sizes, line lengths and tap targets.
 ## Assets
 Real or licensed imagery, illustration or product renders with their file paths and rights.
 
+## Experience inventory
+Gate 2 scope. One line per distinct in-scope page or visitor state the site promises, as `- id: /route — state`. Include each route, and each form with its useful result and error states where they are in scope. Gate 1 still covers only the hero and first proof section. Gate 2 fails until every line has actual desktop and phone screenshots (one screenshot may show several lines) and a written PASS from both reviewers. For example:
+- home: / — full home page
+- start-form: /start — the visitor form before submit
+- start-result: /start — the useful result after a valid answer
+- start-error: /start — the error shown for a missing answer
+
 ## Skill rules
 3-5 lines. Each line names a skill, one rule from it and the concrete decision it caused, for example:
 - skill-name: rule → decision

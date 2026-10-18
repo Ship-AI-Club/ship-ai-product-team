@@ -54,20 +54,59 @@ export function validateContract(text){
  return errors;
 }
 
+export const INVENTORY_SECTION='Experience inventory';
+const INVENTORY_LINE=/^\s*[-*]\s+([a-z0-9][a-z0-9-]*)\s*:\s*(\/\S*)\s+(?:—|–|--?)\s+(\S.*)$/i;
+
+// Gate 2 scope: every in-scope route and key visitor state (forms, useful results, errors) the site promises.
+export function experienceInventory(text){
+ const items=[],errors=[];
+ for(const line of (sections(text||'')[INVENTORY_SECTION]||[]).filter(l=>/^\s*[-*]\s+/.test(l))){
+  const m=INVENTORY_LINE.exec(line);
+  if(!m){errors.push(`Experience inventory lines must read "- id: /route — page or visitor state": ${line.trim()}`);continue;}
+  if(items.some(i=>i.id===m[1]))errors.push(`Experience inventory id "${m[1]}" is listed twice`);
+  items.push({id:m[1],route:m[2],state:m[3].trim()});
+ }
+ if(!items.length)errors.push(`Gate 2 needs a "## ${INVENTORY_SECTION}" in design/contract.md listing every in-scope route and key visitor state (forms, useful results, errors) as "- id: /route — state"`);
+ return {items,errors};
+}
+
+function checkShotFile(root,shot,label,name){
+ const errors=[],width=VIEWPORTS[shot.viewport];
+ if(!width)return [`${label}: ${name} needs a viewport of desktop or phone`];
+ if(shot.width!==width)errors.push(`${label}: the ${name} must be ${width}px wide`);
+ const path=resolve(root,shot.path||'');
+ if(!filled(shot.path)||!existsSync(path))return [...errors,`${label}: ${name} file is missing`];
+ const bytes=readFileSync(path);
+ const image=bytes.subarray(0,8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]))||(bytes[0]===0xff&&bytes[1]===0xd8)||bytes.subarray(8,12).toString()==='WEBP';
+ if(!image)errors.push(`${label}: ${name} must be a PNG, JPEG or WebP render`);
+ if(sha256(bytes)!==shot.sha256)errors.push(`${label}: ${name} hash does not match the saved render`);
+ return errors;
+}
+
 function checkScreenshots(root,shots,label){
  const errors=[],hashes=[];
  for(const [viewport,width] of Object.entries(VIEWPORTS)){
   const shot=list(shots).find(s=>s.viewport===viewport);
   if(!shot){errors.push(`${label}: add a ${viewport} (${width}px) screenshot of the actual render`);continue;}
   hashes.push(shot.sha256);
-  if(shot.width!==width)errors.push(`${label}: the ${viewport} screenshot must be ${width}px wide`);
-  const path=resolve(root,shot.path||'');
-  if(!filled(shot.path)||!existsSync(path)){errors.push(`${label}: ${viewport} screenshot file is missing`);continue;}
-  const bytes=readFileSync(path);
-  const image=bytes.subarray(0,8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]))||(bytes[0]===0xff&&bytes[1]===0xd8)||bytes.subarray(8,12).toString()==='WEBP';
-  if(!image)errors.push(`${label}: ${viewport} screenshot must be a PNG, JPEG or WebP render`);
-  if(sha256(bytes)!==shot.sha256)errors.push(`${label}: ${viewport} screenshot hash does not match the saved render`);
+  errors.push(...checkShotFile(root,shot,label,`${viewport} screenshot`));
  }
+ return {errors,hashes};
+}
+
+// One screenshot may show several inventory items; identical repeats are not required.
+function checkInventoryScreenshots(root,shots,label,items,final){
+ const errors=[],hashes=[],ids=new Set(items.map(i=>i.id));
+ list(shots).forEach((shot,i)=>{
+  const shown=list(shot.experiences),name=`${shot.viewport||'unknown'} screenshot ${i+1}`;
+  hashes.push(shot.sha256);
+  errors.push(...checkShotFile(root,shot,label,name));
+  if(!shown.length)errors.push(`${label}: ${name} must name the inventory experiences it shows`);
+  for(const id of shown)if(!ids.has(id))errors.push(`${label}: ${name} shows "${id}", which is not in the contract's experience inventory`);
+ });
+ if(final)for(const item of items)for(const [viewport,width] of Object.entries(VIEWPORTS))
+  if(!list(shots).some(s=>s.viewport===viewport&&list(s.experiences).includes(item.id)))errors.push(`${label}: no ${viewport} (${width}px) screenshot of "${item.id}" (${item.route} — ${item.state}); every in-scope page and visitor state needs actual desktop and phone evidence`);
+ if(!list(shots).length)errors.push(`${label}: add the desktop and phone screenshots of the actual render`);
  return {errors,hashes};
 }
 
@@ -86,7 +125,7 @@ function checkRender(root,gate,name,brief){
  return errors;
 }
 
-function checkReview(review,role,label,hashes,final,round={}){
+function checkReview(review,role,label,hashes,final,round={},items=null){
  const errors=[];
  if(!review)return [`${label}: ${role} review is missing`];
  if(!filled(review.reviewer))errors.push(`${label}: name the ${role} reviewer`);
@@ -107,14 +146,23 @@ function checkReview(review,role,label,hashes,final,round={}){
   if(!['PASS','REJECT'].includes(rule.verdict))errors.push(`${label}: ${role} rule "${rule.rule||'unnamed'}" needs an explicit PASS or REJECT verdict`);
   else if(rule.verdict==='REJECT'&&!filled(rule.fix))errors.push(`${label}: ${role} rejected "${rule.rule||'a rule'}" without a specific fix`);
  }
- const rejected=REJECT_CRITERIA.filter(c=>criteria[c]?.verdict==='REJECT').map(c=>`${c}: ${criteria[c].correction||''}`).concat(rules.filter(r=>r.verdict==='REJECT').map(r=>`${r.rule}: ${r.fix||''}`));
+ const coverage=list(review.coverage);
+ if(items){
+  for(const c of coverage){
+   if(!items.some(i=>i.id===c.experience))errors.push(`${label}: the ${role} review covers "${c.experience}", which is not in the experience inventory`);
+   else if(!['PASS','REJECT'].includes(c.verdict)||!filled(c.critique))errors.push(`${label}: the ${role} review of "${c.experience}" needs a written critique with PASS or REJECT`);
+   else if(c.verdict==='REJECT'&&!filled(c.correction))errors.push(`${label}: ${role} rejected "${c.experience}" without a specific correction`);
+  }
+  if(final)for(const item of items)if(!coverage.some(c=>c.experience===item.id))errors.push(`${label}: the ${role} review does not cover "${item.id}" (${item.route} — ${item.state}); both reviewers must review every in-scope page and visitor state`);
+ }
+ const rejected=REJECT_CRITERIA.filter(c=>criteria[c]?.verdict==='REJECT').map(c=>`${c}: ${criteria[c].correction||''}`).concat(rules.filter(r=>r.verdict==='REJECT').map(r=>`${r.rule}: ${r.fix||''}`)).concat(items?coverage.filter(c=>c.verdict==='REJECT').map(c=>`${c.experience}: ${c.correction||''}`):[]);
  if(review.verdict==='PASS'&&rejected.length)errors.push(`${label}: ${role} cannot PASS with rejected items`);
  if(review.verdict==='REJECT'&&!rejected.length)errors.push(`${label}: ${role} REJECT must name the rejected criteria or rules`);
  if(final&&review.verdict!=='PASS')errors.push(`${label}: ${role} rejected the latest render: ${rejected.join('; ')||'no reason given'}`);
  return errors;
 }
 
-export function validateGateStage(root,gate,name,{contractSha256,brief,source,briefSha256}={}){
+export function validateGateStage(root,gate,name,{contractSha256,brief,source,briefSha256,inventory=null}={}){
  if(!gate||typeof gate!=='object')return [`${name}: no review recorded`];
  if(gate.status!=='PASS')return [`${name}: not passed (status ${gate.status||'missing'}); expansion and owner review stay blocked`];
  const errors=[];
@@ -129,9 +177,9 @@ export function validateGateStage(root,gate,name,{contractSha256,brief,source,br
   if(!/^[0-9a-f]{64}$/.test(round.sourceSha256||'')||!/^[0-9a-f]{64}$/.test(round.briefSha256||''))errors.push(`${label}: record the sourceSha256 and briefSha256 of the build that was rendered (npm run gate:fingerprint)`);
   if(final&&source&&round.sourceSha256!==source)errors.push(`${label}: the page source, styles, content or brief changed after this render was reviewed; build, render and review the current version`);
   if(final&&briefSha256!=null&&round.briefSha256!==briefSha256)errors.push(`${label}: the brief changed after this render was reviewed; render and review the current brief`);
-  const shots=checkScreenshots(root,round.screenshots,label);errors.push(...shots.errors);
+  const shots=inventory?checkInventoryScreenshots(root,round.screenshots,label,inventory,final):checkScreenshots(root,round.screenshots,label);errors.push(...shots.errors);
   const reviews=list(round.reviews);
-  for(const role of REVIEWER_ROLES)errors.push(...checkReview(reviews.find(r=>r.role===role),role,label,shots.hashes,final,round));
+  for(const role of REVIEWER_ROLES)errors.push(...checkReview(reviews.find(r=>r.role===role),role,label,shots.hashes,final,round,inventory));
   if(!final&&reviews.every(r=>r.verdict==='PASS'))errors.push(`${label}: both reviewers passed, so this must be the final round`);
  });
  const names=new Set();
@@ -168,7 +216,11 @@ export function checkDesignGate(root,{stage='build',brief}={}){
  if(stage==='build'||stage==='owner-review'){
   const ctx={contractSha256:sha256(Buffer.from(contract)),brief,source:sourceFingerprint(root).sha256,briefSha256:briefFingerprint(root)};
   errors.push(...validateGateStage(root,gate.gate1,'Gate 1 (hero and first proof)',ctx));
-  if(stage==='owner-review')errors.push(...validateGateStage(root,gate.gate2,'Gate 2 (full site)',ctx));
+  if(stage==='owner-review'){
+   const inventory=experienceInventory(contract);
+   errors.push(...inventory.errors.map(e=>`Gate 2 (full site): ${e}`));
+   errors.push(...validateGateStage(root,gate.gate2,'Gate 2 (full site)',{...ctx,inventory:inventory.items}));
+  }
  }
  return {status:errors.length?'FAIL':'PASS',stage,errors};
 }

@@ -24,7 +24,7 @@
     "rounds": []
   },
   "gate2": {
-    "scope": "full site, desktop and phone",
+    "scope": "every page and visitor state in the contract's Experience inventory, desktop and phone",
     "status": "pending",
     "contractSha256": "",
     "implementer": "",

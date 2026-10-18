@@ -50,7 +50,7 @@ async function render(root,round){
  return shots;
 }
 
-async function project(patch={}){
+async function project(patch={},contract=CONTRACT){
  const root=await mkdtemp(join(tmpdir(),'design-gate-'));
  await mkdir(join(root,'app'),{recursive:true});await mkdir(join(root,'content'));await mkdir(join(root,'design'));
  await writeFile(join(root,'app/page.jsx'),'export default function Home(){return <main><Hero/></main>}');
@@ -58,12 +58,12 @@ async function project(patch={}){
  await writeFile(join(root,'content/site.json'),JSON.stringify(brief));
  await mkdir(join(root,'brief'));await writeFile(join(root,'brief/project.json'),JSON.stringify(brief));
  await cp(join(source,'lib'),join(root,'lib'),{recursive:true});
- await writeFile(join(root,'design/contract.md'),CONTRACT);
+ await writeFile(join(root,'design/contract.md'),contract);
  bindTo(root);
  const shots=await render(root,1),hashes=shots.map(s=>s.sha256);
  const gate={schemaVersion:1,
   offerReview:{verdict:'PASS',reviewer:'marketing reviewer',offer:'Clear offer',primaryCta:'Example action',proofPlan:'One sourced result',sources:['s1']},
-  gate1:{status:'PASS',contractSha256:sha256(Buffer.from(CONTRACT)),implementer:'frontend cloud run',
+  gate1:{status:'PASS',contractSha256:sha256(Buffer.from(contract)),implementer:'frontend cloud run',
    render:{where:'cloud',runUrl:'https://cursor.com/agents/example',modelSelector:'Claude Opus 5.5 Medium',fast:false,fidelity:'production',skillsRead:['.agents/skills/yc-interface-craft/SKILL.md']},
    rounds:[{round:1,...bind,screenshots:shots,reviews:[review('design',hashes),review('marketing',hashes)]}]}};
  const save=g=>writeFile(join(root,'design/gate.json'),JSON.stringify(g));
@@ -71,6 +71,28 @@ async function project(patch={}){
  return {root,gate,save,done:()=>rm(root,{recursive:true,force:true})};
 }
 const errorsOf=(p,stage)=>checkDesignGate(p.root,stage?{stage}:{}).errors;
+const INVENTORY_CONTRACT=CONTRACT+`## Experience inventory
+- home: / — full home page
+- start-form: /start — the visitor form before submit
+- start-error: /start — the error shown for a missing answer
+`;
+const INVENTORY=['home','start-form','start-error'];
+const coverage=(ids,{skip,reject}={})=>ids.filter(id=>id!==skip).map(id=>id===reject?{experience:id,verdict:'REJECT',critique:`${id} hides the next step`,correction:`Specific ${id} correction`}:{experience:id,verdict:'PASS',critique:`${id} is clear and specific on both viewports`});
+// groups: experiences shown together in one screenshot; skip drops "viewport:id,id" screenshots.
+async function fullSite(p,{groups=[['home'],['start-form','start-error']],skip=[],design={},marketing={}}={}){
+ const dir='design/renders/gate2/round-1';await mkdir(join(p.root,dir),{recursive:true});
+ const shots=[];
+ for(const [viewport,width] of [['desktop',1440],['phone',390]])for(const experiences of groups){
+  if(skip.includes(`${viewport}:${experiences.join(',')}`))continue;
+  const bytes=png(`gate2-${viewport}-${experiences.join('-')}`),path=`${dir}/${viewport}-${experiences.join('-')}.png`;
+  await writeFile(join(p.root,path),bytes);shots.push({viewport,width,path,sha256:sha256(bytes),experiences});
+ }
+ const hashes=shots.map(s=>s.sha256),g=structuredClone(p.gate);
+ g.gate2={...structuredClone(g.gate1),scope:'experience inventory',rounds:[{round:1,...bind,screenshots:shots,reviews:[
+  {...review('design',hashes),coverage:coverage(INVENTORY,design)},
+  {...review('marketing',hashes),coverage:coverage(INVENTORY,marketing)}]}]};
+ return g;
+}
 
 test('the starter ships a neutral placeholder, not a marketing composition',async()=>{
  const page=await read('app/page.jsx'),css=await read('app/globals.css'),site=await read('content/site.json');
@@ -271,10 +293,10 @@ test('every skill rule needs an explicit PASS or REJECT verdict',async()=>{
 });
 
 test('publication requires the exact source the reviewers and the owner approved',async()=>{
- const p=await project({publicationApproved:true,siteUrl:'https://example.com'});
+ const p=await project({publicationApproved:true,siteUrl:'https://example.com'},INVENTORY_CONTRACT);
  try{
   const site=JSON.parse(await readFile(join(p.root,'content/site.json')));
-  const g=structuredClone(p.gate);g.gate2={...structuredClone(g.gate1),scope:'full site'};
+  const g=await fullSite(p);
   await p.save(g);
   assert.ok(publicationErrors(site,p.root).some(e=>e.includes('ownerApproval')),'publication without a recorded owner approval');
   g.ownerApproval={approvedBy:'Business owner',approvedAt:'2026-10-18',message:'Owner approved the reviewed draft in chat',sourceSha256:bind.sourceSha256,briefSha256:bind.briefSha256};
@@ -285,5 +307,28 @@ test('publication requires the exact source the reviewers and the owner approved
   const errors=publicationErrors(site,p.root).join('\n');
   assert.match(errors,/changed after the owner approved it/);assert.match(errors,/changed after this render was reviewed/);
   assert.match(checkRelease(site,'build',{VERCEL:'1'},p.root).join('\n'),/exact reviewed and approved version/);
+ }finally{await p.done();}
+});
+
+test('Gate 2 covers every page and visitor state in the contract inventory on desktop and phone, reviewed by both',async()=>{
+ const bare=await project();
+ try{
+  const g=await fullSite(bare);await bare.save(g);
+  assert.match(errorsOf(bare,'owner-review').join('\n'),/needs a "## Experience inventory"/,'Gate 2 without a recorded inventory');
+ }finally{await bare.done();}
+ const p=await project({},INVENTORY_CONTRACT);
+ try{
+  assert.deepEqual(errorsOf(p,'build'),[],'Gate 1 keeps its hero and first proof scope: one desktop and one phone render');
+  await p.save(await fullSite(p));
+  assert.deepEqual(errorsOf(p,'owner-review'),[],'one screenshot may show several states; identical repeats are not required');
+  const fails=async(opts,pattern,why)=>{await p.save(await fullSite(p,opts));assert.match(errorsOf(p,'owner-review').join('\n'),pattern,why);};
+  await fails({groups:[['home']]},/no desktop \(1440px\) screenshot of "start-form"/,'a homepage image per viewport is not full-site evidence');
+  await fails({skip:['phone:start-form,start-error']},/no phone \(390px\) screenshot of "start-error"/,'each state needs phone evidence');
+  await fails({groups:[['home'],['start-form','start-error'],['pricing']]},/shows "pricing", which is not in the contract's experience inventory/,'screenshots map to the recorded inventory');
+  await fails({marketing:{skip:'start-form'}},/marketing review does not cover "start-form"/,'both reviewers cover every state');
+  await fails({design:{skip:'start-error'}},/design review does not cover "start-error"/,'both reviewers cover every state');
+  await fails({design:{reject:'start-error'}},/design cannot PASS with rejected items/,'a rejected state blocks the PASS');
+  const g=await fullSite(p);g.gate2.rounds[0].screenshots[0].experiences=[];await p.save(g);
+  assert.match(errorsOf(p,'owner-review').join('\n'),/must name the inventory experiences it shows/);
  }finally{await p.done();}
 });
