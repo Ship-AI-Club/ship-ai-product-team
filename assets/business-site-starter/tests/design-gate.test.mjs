@@ -5,7 +5,8 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
-import {checkDesignGate,validateContract,sha256,PLACEHOLDER_MARK,PAGE_PLACEHOLDER_MARK,REJECT_CRITERIA} from '../lib/design-gate.mjs';
+import {publicationErrors,checkRelease} from '../scripts/verify-release.mjs';
+import {checkDesignGate,validateContract,sha256,sourceFingerprint,briefFingerprint,PLACEHOLDER_MARK,PAGE_PLACEHOLDER_MARK,REJECT_CRITERIA} from '../lib/design-gate.mjs';
 
 const source=fileURLToPath(new URL('../',import.meta.url));
 const read=p=>readFile(join(source,p),'utf8');
@@ -39,7 +40,9 @@ const rules=(verdict='PASS')=>[
  {skill:'frontend-design',rule:'type contrast',decision:'serif display',screenshot:'desktop',region:'headline',verdict:'PASS'},
 ].map(r=>r.verdict==='REJECT'?{...r,fix:'Replace the stock image with the real result render'}:r);
 const criteria=(rejected=[])=>Object.fromEntries(REJECT_CRITERIA.map(c=>[c,rejected.includes(c)?{verdict:'REJECT',critique:`${c} is weak`,correction:`Specific ${c} correction`}:{verdict:'PASS',critique:`${c} reads as specific to this business`}]));
-const review=(role,hashes,{verdict='PASS',rejected=[],ruleVerdict='PASS'}={})=>({role,reviewer:`${role} reviewer`,verdict,reviewedScreenshots:hashes,criteria:criteria(rejected),rules:rules(ruleVerdict)});
+let bind={};
+const bindTo=root=>{bind={sourceSha256:sourceFingerprint(root).sha256,briefSha256:briefFingerprint(root)};return bind;};
+const review=(role,hashes,{verdict='PASS',rejected=[],ruleVerdict='PASS'}={})=>({role,reviewer:`${role} reviewer`,verdict,reviewedScreenshots:hashes,...bind,criteria:criteria(rejected),rules:rules(ruleVerdict)});
 
 async function render(root,round){
  const shots=[];await mkdir(join(root,`design/renders/gate1/round-${round}`),{recursive:true});
@@ -47,18 +50,22 @@ async function render(root,round){
  return shots;
 }
 
-async function project(){
+async function project(patch={}){
  const root=await mkdtemp(join(tmpdir(),'design-gate-'));
  await mkdir(join(root,'app'),{recursive:true});await mkdir(join(root,'content'));await mkdir(join(root,'design'));
  await writeFile(join(root,'app/page.jsx'),'export default function Home(){return <main><Hero/></main>}');
- await writeFile(join(root,'content/site.json'),JSON.stringify(await realBrief()));
+ const brief={...await realBrief(),...patch};
+ await writeFile(join(root,'content/site.json'),JSON.stringify(brief));
+ await mkdir(join(root,'brief'));await writeFile(join(root,'brief/project.json'),JSON.stringify(brief));
+ await cp(join(source,'lib'),join(root,'lib'),{recursive:true});
  await writeFile(join(root,'design/contract.md'),CONTRACT);
+ bindTo(root);
  const shots=await render(root,1),hashes=shots.map(s=>s.sha256);
  const gate={schemaVersion:1,
   offerReview:{verdict:'PASS',reviewer:'marketing reviewer',offer:'Clear offer',primaryCta:'Example action',proofPlan:'One sourced result',sources:['s1']},
   gate1:{status:'PASS',contractSha256:sha256(Buffer.from(CONTRACT)),implementer:'frontend cloud run',
    render:{where:'cloud',runUrl:'https://cursor.com/agents/example',modelSelector:'Claude Opus 5.5 Medium',fast:false,fidelity:'production',skillsRead:['.agents/skills/yc-interface-craft/SKILL.md']},
-   rounds:[{round:1,screenshots:shots,reviews:[review('design',hashes),review('marketing',hashes)]}]}};
+   rounds:[{round:1,...bind,screenshots:shots,reviews:[review('design',hashes),review('marketing',hashes)]}]}};
  const save=g=>writeFile(join(root,'design/gate.json'),JSON.stringify(g));
  await save(gate);
  return {root,gate,save,done:()=>rm(root,{recursive:true,force:true})};
@@ -116,8 +123,9 @@ test('a rejected render passes only after a recorded revision and re-render',asy
   g.gate1.rounds[0].reviews=[review('design',h1,{verdict:'REJECT',rejected:['composition','type'],ruleVerdict:'REJECT'}),review('marketing',h1,{verdict:'REJECT',rejected:['cta']})];
   await p.save(g);
   assert.ok(errorsOf(p).some(e=>e.includes('design rejected the latest render')&&e.includes('composition')));
+  await writeFile(join(p.root,'app/page.jsx'),'export default function Home(){return <main><RevisedHero/></main>}');bindTo(p.root);
   const shots=await render(p.root,2),h2=shots.map(s=>s.sha256);
-  g.gate1.rounds.push({round:2,screenshots:shots,reviews:[review('design',h2),review('marketing',h2)]});await p.save(g);
+  g.gate1.rounds.push({round:2,...bind,screenshots:shots,reviews:[review('design',h2),review('marketing',h2)]});await p.save(g);
   assert.ok(errorsOf(p).some(e=>e.includes('round 2: record the revision')));
   g.gate1.rounds[1].revision={summary:'Rebuilt hero grid and CTA label',addresses:['composition','type','cta']};await p.save(g);
   assert.deepEqual(errorsOf(p),[]);
@@ -223,4 +231,59 @@ test('production build runs the gate',async()=>{
  assert.match(pkg.scripts.prebuild,/verify:gate/);
  assert.match(pkg.scripts['verify:gate'],/--stage build/);
  assert.match(pkg.scripts['build:review'],/--stage render/);
+});
+
+test('editing the page, styles, content or brief after review invalidates the PASS',async()=>{
+ for(const [file,edit] of [['app/page.jsx','export default function Home(){return <main>changed</main>}'],['app/globals.css','body{color:red}'],['content/site.json',null],['brief/project.json',null],['components/Hero.jsx','export default function Hero(){return null}']]){
+  const p=await project();
+  try{
+   assert.deepEqual(errorsOf(p),[]);
+   if(edit===null){const b=JSON.parse(await readFile(join(p.root,file)));b.positioning.headline='A different headline';await writeFile(join(p.root,file),JSON.stringify(b));}
+   else{await mkdir(join(p.root,file,'..'),{recursive:true});await writeFile(join(p.root,file),edit);}
+   const errors=errorsOf(p);
+   assert.ok(errors.some(e=>e.includes('changed after this render was reviewed')),`${file} edit did not invalidate the PASS`);
+   assert.equal(checkDesignGate(p.root).status,'FAIL');
+  }finally{await p.done();}
+ }
+});
+
+test('a PASS needs reviews that cite the exact source and brief that were rendered',async()=>{
+ const p=await project();
+ try{
+  const g=structuredClone(p.gate);
+  delete g.gate1.rounds[0].sourceSha256;await p.save(g);
+  assert.ok(errorsOf(p).some(e=>e.includes('record the sourceSha256 and briefSha256')));
+  const h=structuredClone(p.gate);h.gate1.rounds[0].reviews[1].sourceSha256='0'.repeat(64);await p.save(h);
+  assert.ok(errorsOf(p).some(e=>e.includes('marketing review must cite the sourceSha256 and briefSha256')));
+ }finally{await p.done();}
+});
+
+test('every skill rule needs an explicit PASS or REJECT verdict',async()=>{
+ for(const verdict of [undefined,'','pass','OK','N/A']){
+  const p=await project();
+  try{
+   const g=structuredClone(p.gate);
+   if(verdict===undefined)delete g.gate1.rounds[0].reviews[0].rules[1].verdict;else g.gate1.rounds[0].reviews[0].rules[1].verdict=verdict;
+   await p.save(g);
+   assert.ok(errorsOf(p).some(e=>e.includes('needs an explicit PASS or REJECT verdict')),`rule verdict ${JSON.stringify(verdict)} passed`);
+  }finally{await p.done();}
+ }
+});
+
+test('publication requires the exact source the reviewers and the owner approved',async()=>{
+ const p=await project({publicationApproved:true,siteUrl:'https://example.com'});
+ try{
+  const site=JSON.parse(await readFile(join(p.root,'content/site.json')));
+  const g=structuredClone(p.gate);g.gate2={...structuredClone(g.gate1),scope:'full site'};
+  await p.save(g);
+  assert.ok(publicationErrors(site,p.root).some(e=>e.includes('ownerApproval')),'publication without a recorded owner approval');
+  g.ownerApproval={approvedBy:'Business owner',approvedAt:'2026-10-18',message:'Owner approved the reviewed draft in chat',sourceSha256:bind.sourceSha256,briefSha256:bind.briefSha256};
+  await p.save(g);
+  assert.deepEqual(publicationErrors(site,p.root),[]);
+  assert.deepEqual(checkRelease(site,'build',{VERCEL:'1'},p.root),[]);
+  await mkdir(join(p.root,'app'),{recursive:true});await writeFile(join(p.root,'app/globals.css'),'body{background:#000}');
+  const errors=publicationErrors(site,p.root).join('\n');
+  assert.match(errors,/changed after the owner approved it/);assert.match(errors,/changed after this render was reviewed/);
+  assert.match(checkRelease(site,'build',{VERCEL:'1'},p.root).join('\n'),/exact reviewed and approved version/);
+ }finally{await p.done();}
 });

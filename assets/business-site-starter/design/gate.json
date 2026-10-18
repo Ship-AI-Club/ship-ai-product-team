@@ -37,5 +37,12 @@
       "skillsRead": []
     },
     "rounds": []
+  },
+  "ownerApproval": {
+    "approvedBy": "",
+    "approvedAt": "",
+    "message": "",
+    "sourceSha256": "",
+    "briefSha256": ""
   }
 }

@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
-import {existsSync,readFileSync} from 'node:fs';
-import {resolve} from 'node:path';
+import {existsSync,readFileSync,readdirSync,statSync} from 'node:fs';
+import {relative,resolve} from 'node:path';
 import {siteBuild,demoMisuse} from './brief.mjs';
 
 export const CONTRACT_PATH='design/contract.md';
@@ -15,6 +15,20 @@ export const REJECT_CRITERIA=['composition','branding','type','copy','proof','ct
 const MODEL_LABELS={'claude-sonnet-5-5':/sonnet\s*5\.5/i,'claude-opus-5-5':/opus\s*5\.5/i};
 
 export const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
+export const BRIEF_PATH='brief/project.json';
+// Everything that changes what the reviewed page looks like or says. Gate state, renders and tests are excluded.
+export const RENDER_INPUT_DIRS=['app','components','lib','content','public','styles'];
+export const RENDER_INPUT_FILES=[BRIEF_PATH,'next.config.mjs','package.json','package-lock.json','jsconfig.json',CONTRACT_PATH];
+function walk(root,dir){
+ const full=resolve(root,dir);if(!existsSync(full))return [];
+ return statSync(full).isDirectory()?readdirSync(full).sort().flatMap(n=>walk(root,`${dir}/${n}`)):[dir];
+}
+export function sourceFingerprint(root){
+ const files=[...RENDER_INPUT_DIRS.flatMap(d=>walk(root,d)),...RENDER_INPUT_FILES.filter(f=>existsSync(resolve(root,f)))].sort();
+ const lines=files.map(f=>`${relative(root,resolve(root,f))}\0${sha256(readFileSync(resolve(root,f)))}`);
+ return {sha256:sha256(Buffer.from(lines.join('\n'))),files:files.length};
+}
+export const briefFingerprint=root=>existsSync(resolve(root,BRIEF_PATH))?sha256(readFileSync(resolve(root,BRIEF_PATH))):'';
 const filled=x=>typeof x==='string'&&x.trim().length>0;
 const list=x=>Array.isArray(x)?x:[];
 
@@ -72,11 +86,12 @@ function checkRender(root,gate,name,brief){
  return errors;
 }
 
-function checkReview(review,role,label,hashes,final){
+function checkReview(review,role,label,hashes,final,round={}){
  const errors=[];
  if(!review)return [`${label}: ${role} review is missing`];
  if(!filled(review.reviewer))errors.push(`${label}: name the ${role} reviewer`);
  if(!['PASS','REJECT'].includes(review.verdict))errors.push(`${label}: ${role} verdict must be PASS or REJECT`);
+ if(review.sourceSha256!==round.sourceSha256||review.briefSha256!==round.briefSha256)errors.push(`${label}: the ${role} review must cite the sourceSha256 and briefSha256 of the render it reviewed`);
  const seen=list(review.reviewedScreenshots);
  if(!hashes.length||hashes.some(h=>!seen.includes(h)))errors.push(`${label}: the ${role} review must cite the sha256 of every screenshot it reviewed`);
  const criteria=review.criteria||{};
@@ -89,7 +104,8 @@ function checkReview(review,role,label,hashes,final){
  if(rules.length<3||rules.length>5)errors.push(`${label}: the ${role} review must check 3-5 skill rules`);
  for(const rule of rules){
   if(!['skill','rule','decision','region'].every(k=>filled(rule[k]))||!Object.keys(VIEWPORTS).includes(rule.screenshot))errors.push(`${label}: each ${role} rule needs skill, rule, implemented decision, screenshot (desktop or phone) and region`);
-  if(rule.verdict==='REJECT'&&!filled(rule.fix))errors.push(`${label}: ${role} rejected "${rule.rule||'a rule'}" without a specific fix`);
+  if(!['PASS','REJECT'].includes(rule.verdict))errors.push(`${label}: ${role} rule "${rule.rule||'unnamed'}" needs an explicit PASS or REJECT verdict`);
+  else if(rule.verdict==='REJECT'&&!filled(rule.fix))errors.push(`${label}: ${role} rejected "${rule.rule||'a rule'}" without a specific fix`);
  }
  const rejected=REJECT_CRITERIA.filter(c=>criteria[c]?.verdict==='REJECT').map(c=>`${c}: ${criteria[c].correction||''}`).concat(rules.filter(r=>r.verdict==='REJECT').map(r=>`${r.rule}: ${r.fix||''}`));
  if(review.verdict==='PASS'&&rejected.length)errors.push(`${label}: ${role} cannot PASS with rejected items`);
@@ -98,7 +114,7 @@ function checkReview(review,role,label,hashes,final){
  return errors;
 }
 
-export function validateGateStage(root,gate,name,{contractSha256,brief}={}){
+export function validateGateStage(root,gate,name,{contractSha256,brief,source,briefSha256}={}){
  if(!gate||typeof gate!=='object')return [`${name}: no review recorded`];
  if(gate.status!=='PASS')return [`${name}: not passed (status ${gate.status||'missing'}); expansion and owner review stay blocked`];
  const errors=[];
@@ -110,9 +126,12 @@ export function validateGateStage(root,gate,name,{contractSha256,brief}={}){
   const label=`${name} round ${i+1}`,final=i===rounds.length-1;
   if(round.round!==i+1)errors.push(`${label}: rounds must be numbered 1, 2, 3 in order`);
   if(i>0&&(!filled(round.revision?.summary)||!list(round.revision?.addresses).length))errors.push(`${label}: record the revision and the corrections it addresses before the re-render`);
+  if(!/^[0-9a-f]{64}$/.test(round.sourceSha256||'')||!/^[0-9a-f]{64}$/.test(round.briefSha256||''))errors.push(`${label}: record the sourceSha256 and briefSha256 of the build that was rendered (npm run gate:fingerprint)`);
+  if(final&&source&&round.sourceSha256!==source)errors.push(`${label}: the page source, styles, content or brief changed after this render was reviewed; build, render and review the current version`);
+  if(final&&briefSha256!=null&&round.briefSha256!==briefSha256)errors.push(`${label}: the brief changed after this render was reviewed; render and review the current brief`);
   const shots=checkScreenshots(root,round.screenshots,label);errors.push(...shots.errors);
   const reviews=list(round.reviews);
-  for(const role of REVIEWER_ROLES)errors.push(...checkReview(reviews.find(r=>r.role===role),role,label,shots.hashes,final));
+  for(const role of REVIEWER_ROLES)errors.push(...checkReview(reviews.find(r=>r.role===role),role,label,shots.hashes,final,round));
   if(!final&&reviews.every(r=>r.verdict==='PASS'))errors.push(`${label}: both reviewers passed, so this must be the final round`);
  });
  const names=new Set();
@@ -147,7 +166,7 @@ export function checkDesignGate(root,{stage='build',brief}={}){
  const gate=existsSync(gateFile)?readJson(gateFile):{};
  errors.push(...validateOfferReview(gate.offerReview));
  if(stage==='build'||stage==='owner-review'){
-  const ctx={contractSha256:sha256(Buffer.from(contract)),brief};
+  const ctx={contractSha256:sha256(Buffer.from(contract)),brief,source:sourceFingerprint(root).sha256,briefSha256:briefFingerprint(root)};
   errors.push(...validateGateStage(root,gate.gate1,'Gate 1 (hero and first proof)',ctx));
   if(stage==='owner-review')errors.push(...validateGateStage(root,gate.gate2,'Gate 2 (full site)',ctx));
  }

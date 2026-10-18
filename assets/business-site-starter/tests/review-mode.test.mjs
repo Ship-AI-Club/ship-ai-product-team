@@ -93,12 +93,21 @@ test('isDemo cannot carry real owner facts to skip validation or the design gate
  }
 });
 
-test('a review draft refuses to build in a deploy environment; production may',()=>{
+test('a review draft builds only locally; an unapproved production brief is rejected everywhere',()=>{
  const p=fixture('b2b');
  assert.match(checkRelease(p,'build',{VERCEL:'1'}).join(''),/Refusing to build a private review draft/);
  assert.match(checkRelease(p,'build',{NETLIFY:'true'}).join(''),/deploy environment/);
  assert.deepEqual(checkRelease(p,'build',{}),[]);
- assert.deepEqual(checkRelease({...p,mode:'production'},'build',{VERCEL:'1'}),[]);
+ for(const env of [{},{VERCEL:'1'}]){
+  const errors=checkRelease({...p,mode:'production'},'build',env,root).join('\n');
+  assert.match(errors,/Confirm positioning, product scope, dated evidence sources/,`unapproved production brief built with ${JSON.stringify(env)}`);
+  assert.match(errors,/pricing/);
+ }
+ const approved=JSON.parse(readFileSync(resolve(root,'examples/b2b.json'),'utf8'));approved.isDemo=false;approved.mode='production';
+ assert.deepEqual(checkRelease(approved,'build',{},root),[],'a production brief with final approvals builds locally');
+ const deploy=checkRelease(approved,'build',{VERCEL:'1'},root).join('\n');
+ assert.match(deploy,/publicationApproved true/);assert.match(deploy,/Owner review is not complete/);assert.match(deploy,/ownerApproval/);
+ assert.match(checkRelease({...fixture('b2c'),isDemo:true,mode:undefined,intake:{answers:[],openQuestions:[]}},'build',{VERCEL:'1'},root).join(''),/demo brief in a deploy environment/);
  const pkg=JSON.parse(readFileSync(resolve(root,'package.json'),'utf8'));
  assert.match(pkg.scripts.prebuild,/verify:release/);assert.match(pkg.scripts['build:review'],/verify:release/);
  assert.match(pkg.scripts['verify:publish'],/--target publication/);
