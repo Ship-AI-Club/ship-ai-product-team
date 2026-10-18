@@ -1,9 +1,10 @@
 {
   "name": "ship-ai-product-team",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node scripts/verify-plugin.mjs && node --test tests/*.test.mjs"
+    "check": "node scripts/verify-plugin.mjs && node --test tests/*.test.mjs",
+    "test:browser": "node --test tests/browser/*.test.mjs"
   }
 }

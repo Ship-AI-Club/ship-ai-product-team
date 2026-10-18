@@ -5,7 +5,7 @@ import {resolve,relative,isAbsolute} from 'node:path';
 const root=await realpath(process.cwd());
 const manifest=JSON.parse(await readFile(resolve(root,'.agents/ship-ai-skills.json'),'utf8'));
 const errors=[],seen=new Set();let checked=0;
-if(manifest.expectedSkills?.length!==47)errors.push('Expected the complete 47-entry Ship AI library.');
+if(manifest.expectedSkills?.length!==50)errors.push('Expected the complete 50-entry Ship AI library.');
 for(const f of manifest.files||[]){
  try{
   if(typeof f.path!=='string'||!f.path.startsWith('.agents/skills/')||isAbsolute(f.path)||seen.has(f.path))throw Error('Invalid or duplicate skill path');

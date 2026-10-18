@@ -26,6 +26,7 @@ const pkg=JSON.parse(await readFile(resolve(target,'package.json'),'utf8'));
 pkg.scripts['verify:skills']='node scripts/verify-project-skills.mjs';
 pkg.scripts.check='npm run verify:skills && '+pkg.scripts.check;
 pkg.scripts.prebuild='npm run verify:skills && '+pkg.scripts.prebuild;
+pkg.scripts['build:review']='npm run verify:skills && '+pkg.scripts['build:review'];
 await writeFile(resolve(target,'package.json'),JSON.stringify(pkg,null,2)+'\n');
 await mkdir(resolve(target,'evidence'),{recursive:true});
 await writeFile(resolve(target,'evidence/plugin-source.json'),JSON.stringify({...audit,pluginManifestSha256:createHash('sha256').update(await readFile(resolve(root,'plugin.json'))).digest('hex')},null,2)+'\n');
