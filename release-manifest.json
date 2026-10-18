@@ -103,13 +103,13 @@
     },
     {
       "path": "assets/business-site-starter/AGENTS.md",
-      "sha256": "e9344ed1c5a299a254b38d4a07d84e5293f3638f4bd443ee555d018a29a8cccb",
-      "bytes": 16233
+      "sha256": "d7c3346d7ed0bf7b0cf176bc938563f58204caf1ccbb2949f3ff0635d9967a6d",
+      "bytes": 16570
     },
     {
       "path": "assets/business-site-starter/CLOUD-HANDOFF.md",
-      "sha256": "8b216468971eac30cf141e1c70d85445811850609099f8d33f7a4480af2f3eba",
-      "bytes": 4612
+      "sha256": "7a5c955e1a6c3cd09eb8b631d39ef096181c87e89295002dd4320c2453633692",
+      "bytes": 4788
     },
     {
       "path": "assets/business-site-starter/ENGINEERING-SETUP.md",
@@ -118,8 +118,8 @@
     },
     {
       "path": "assets/business-site-starter/README.md",
-      "sha256": "8d958bb3e7e146150ef2f3bf7ca96bf91e4588a1bfff2113e7f003fa1a3422df",
-      "bytes": 7206
+      "sha256": "339c8d08589501490189f98df7ed10db4421004dad11fca58fd9d506f863b913",
+      "bytes": 7528
     },
     {
       "path": "assets/business-site-starter/app/about/page.jsx",
@@ -213,13 +213,13 @@
     },
     {
       "path": "assets/business-site-starter/design/contract.md",
-      "sha256": "5b07822d8d8bea967999511f2e141833fb6bd343296335cbd67736e791f202f3",
-      "bytes": 1684
+      "sha256": "e32805482865e39a993549ce6374c535e7348c78578858318cc068b72c0dfe8a",
+      "bytes": 2360
     },
     {
       "path": "assets/business-site-starter/design/gate.json",
-      "sha256": "650bdaab4dba6bc3c9eb6f1be787a3ac7e70acbaf35a8561fba2966d8988467d",
-      "bytes": 959
+      "sha256": "64c7fa34e5789db7fc431bdfef9b7ea34236326f4c54f774a03ba4ac01639d8d",
+      "bytes": 1017
     },
     {
       "path": "assets/business-site-starter/examples/b2b.json",
@@ -238,8 +238,8 @@
     },
     {
       "path": "assets/business-site-starter/lib/design-gate.mjs",
-      "sha256": "c685d0be644bfb619f93ebf4bd01dc812a232f4377e36a05cc8ddab763b83594",
-      "bytes": 13048
+      "sha256": "08ada4ac5556352c777009fc7777cf09dba525a399130dc63387de6291e7985c",
+      "bytes": 16614
     },
     {
       "path": "assets/business-site-starter/lib/forms.mjs",
@@ -303,8 +303,8 @@
     },
     {
       "path": "assets/business-site-starter/tests/design-gate.test.mjs",
-      "sha256": "b79959df618c7e308d32248125e01825c1a49c637ae5d22d981b07b0e9a6ebd6",
-      "bytes": 18457
+      "sha256": "f37dbacf230c04b93d9006563cfb613ec06f722e3144228c01ccb7739dc81335",
+      "bytes": 21980
     },
     {
       "path": "assets/business-site-starter/tests/design-skills.test.mjs",
@@ -378,18 +378,18 @@
     },
     {
       "path": "roles/backend.md",
-      "sha256": "c0f8a5235955f3f293284585d38bf1fd980b6105304af7e7ff8f82ee9b600f82",
-      "bytes": 11438
+      "sha256": "0e00a5ed956c4063f6719ce7182362f0566a112393276ce5de81bc8abe8b54b7",
+      "bytes": 11836
     },
     {
       "path": "roles/designer.md",
-      "sha256": "6bebd55e5b56a61d695e523bf5e429370ed1aad349a85c8f9340196f0579153d",
-      "bytes": 11972
+      "sha256": "cae0a30264fd88add8d9206c26c9041d8ef6f6857b494b503a7cd66efd369b52",
+      "bytes": 12444
     },
     {
       "path": "roles/frontend.md",
-      "sha256": "1623f83cb719bcd1f90a938dd59dabdb035d9c3f6259f43d670e71b04b286a31",
-      "bytes": 15897
+      "sha256": "62716fbf7c254dd1310a66c6f3bf6f6a09bb7f4e95bcbc050250dc045fa3cde3",
+      "bytes": 16477
     },
     {
       "path": "roles/marketing-performance.md",
@@ -413,13 +413,13 @@
     },
     {
       "path": "roles/pm.md",
-      "sha256": "7a65341c6cde337eb7b305d3d253705735a5afb784c9c0dbe90e0be79aec3710",
-      "bytes": 11683
+      "sha256": "e6cd2621ef162b928cbd78980c8308a66fbd474119bbd7d04381b8e0d431cbf8",
+      "bytes": 12177
     },
     {
       "path": "roles/research.md",
-      "sha256": "3b463ec814a6ee9b83c7e6d3781eff6fe2ba023d2370a3f34b32a8e3e7813e47",
-      "bytes": 8854
+      "sha256": "c24e0c55aba5eef8982a51b89393a38c6854e3d16e567ce2b39fd44965f338f8",
+      "bytes": 9252
     },
     {
       "path": "scripts/build-release-manifest.mjs",
@@ -833,8 +833,8 @@
     },
     {
       "path": "skills/cursor-cloud-build/SKILL.md",
-      "sha256": "6927bc12059a5e113d98ed5a2cf933a03fb50ecd49ee57b2cc596626c4ecfc4b",
-      "bytes": 4983
+      "sha256": "55663e29e5e1afe35200534820be82d5150ecf60f9de51483ad6e62d2c91d0e8",
+      "bytes": 5165
     },
     {
       "path": "skills/customer-research/LICENSE",
@@ -1143,23 +1143,23 @@
     },
     {
       "path": "skills/ship-ai-design-gate/SKILL.md",
-      "sha256": "c62c75c1d3915722fef63d0def7352b609c1cf3499416e3024323236b17b578c",
-      "bytes": 8025
+      "sha256": "1f60e2d14de64a9da5af9d20a7ccb38ac959dd222262a81ae9e61f033daea36a",
+      "bytes": 8667
     },
     {
       "path": "skills/ship-ai-frontend-engineer/SKILL.md",
-      "sha256": "c4e37103ec756900c2b1934892a07f6cd2c0e23c154a51f835da631fbceec449",
-      "bytes": 8148
+      "sha256": "f29458c21d76f025e3af5a891f3c3ace01cc77fc66ff357fe749e43f0df299b5",
+      "bytes": 8330
     },
     {
       "path": "skills/ship-ai-product-designer/SKILL.md",
-      "sha256": "5f8092fc9c77b331eeac902cc772a706a7e4949b99fcf10f280ea286a3539d66",
-      "bytes": 4211
+      "sha256": "7cfc25e861cfc8e1ecf8e01e4ab63c60b9f4090702b2ad89134e5fc35327cbd0",
+      "bytes": 4285
     },
     {
       "path": "skills/ship-ai-product-manager/SKILL.md",
-      "sha256": "dd7fa8829b78920a1e4c7b5dceb72123dc494764c3a47e177d640df57c065c3b",
-      "bytes": 4054
+      "sha256": "baf475b5603a95a9bb60da145930bf144a9b75be1587ad0327fc0c9cdefc252b",
+      "bytes": 4241
     },
     {
       "path": "skills/ship-ai-product-researcher/SKILL.md",
@@ -1173,8 +1173,8 @@
     },
     {
       "path": "skills/ship-ai-team-workflow/SKILL.md",
-      "sha256": "53785a80e65b1065c61df6a68fa00031774077ddf02b8f42727d2e4d23f03f02",
-      "bytes": 3038
+      "sha256": "e4c3fdb9c60de3499e637056691c9ee1b80b8f4613174bdfbe69f7e92c7c00a1",
+      "bytes": 3566
     },
     {
       "path": "skills/signup/LICENSE",
@@ -1338,13 +1338,13 @@
     },
     {
       "path": "templates/frontend.json",
-      "sha256": "f8f7acf7ce0daf93eb766825d94f794e29a664a6fd5379040ea726d7d078455d",
-      "bytes": 2940
+      "sha256": "514b0dd2deb031af3bafa81647722aa62600660755a6ee9b759fe4b9b1749258",
+      "bytes": 3059
     },
     {
       "path": "templates/pm.json",
-      "sha256": "d9c3eb0330642a57c401e52e88e280e941e8d7bba38b2e0d898fb4e9cf54c3c3",
-      "bytes": 3167
+      "sha256": "0c8cd49c222cbcbc5200db108263cce305e51a9560347b0659a07528ccdd35fe",
+      "bytes": 3367
     },
     {
       "path": "templates/research.json",
