@@ -1,0 +1,144 @@
+import {spawn} from 'node:child_process';
+import {existsSync,mkdtempSync,readFileSync,rmSync} from 'node:fs';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {createServer} from 'node:net';
+import {tmpdir} from 'node:os';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {isReview} from '../lib/brief.mjs';
+
+const CHROME=[process.env.CHROME_PATH,'/usr/local/bin/google-chrome','/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser','/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].filter(Boolean);
+const TEXT_TYPES=new Set(['','text','email','tel','url','search','number','password','date','textarea']);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function freePort(){return new Promise((ok,fail)=>{const s=createServer();s.on('error',fail);s.listen(0,'127.0.0.1',()=>{const {port}=s.address();s.close(()=>ok(port));});});}
+
+async function waitFor(fn,ms,what){
+ const end=Date.now()+ms;let last;
+ while(Date.now()<end){try{const v=await fn();if(v)return v;}catch(e){last=e;}await sleep(150);}
+ throw new Error(`Timed out waiting for ${what}${last?`: ${last.message}`:''}`);
+}
+
+class Cdp{
+ constructor(url){this.ws=new WebSocket(url);this.id=0;this.pending=new Map();this.listeners=[];
+  this.ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id&&this.pending.has(m.id)){const {ok,fail}=this.pending.get(m.id);this.pending.delete(m.id);m.error?fail(new Error(`${m.error.message}`)):ok(m.result);}else if(m.method)for(const l of this.listeners)l(m);});}
+ open(){return new Promise((ok,fail)=>{this.ws.addEventListener('open',ok,{once:true});this.ws.addEventListener('error',fail,{once:true});});}
+ send(method,params={}){const id=++this.id;this.ws.send(JSON.stringify({id,method,params}));return new Promise((ok,fail)=>this.pending.set(id,{ok,fail}));}
+ on(fn){this.listeners.push(fn);}
+ once(method,ms){return new Promise((ok,fail)=>{const t=setTimeout(()=>fail(new Error(`${method} timed out`)),ms);const l=m=>{if(m.method===method){clearTimeout(t);this.listeners=this.listeners.filter(x=>x!==l);ok(m.params);}};this.on(l);});}
+ close(){this.ws.close();}
+}
+
+async function launchChrome(){
+ const bin=CHROME.find(p=>existsSync(p));
+ if(!bin)throw new Error('No Chrome or Chromium found. Set CHROME_PATH.');
+ const profile=mkdtempSync(resolve(tmpdir(),'forms-nojs-chrome-'));
+ const proc=spawn(bin,['--headless=new','--no-sandbox','--disable-gpu','--no-first-run','--no-default-browser-check','--disable-background-networking','--disable-component-update','--disable-sync','--remote-debugging-port=0',`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
+ const port=await waitFor(()=>{const f=resolve(profile,'DevToolsActivePort');return existsSync(f)&&readFileSync(f,'utf8').split('\n')[0];},20000,'Chrome to start');
+ const page=await waitFor(async()=>(await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find(t=>t.type==='page'),10000,'a Chrome page');
+ return {page,stop(){proc.kill('SIGKILL');rmSync(profile,{recursive:true,force:true});}};
+}
+
+async function startServer(root){
+ if(!existsSync(resolve(root,'.next')))throw new Error('No production build found. Run npm run build (or npm run build:review for a private review draft) first.');
+ const port=await freePort();
+ const proc=spawn(process.execPath,[resolve(root,'node_modules/next/dist/bin/next'),'start','-p',String(port),'-H','127.0.0.1'],{cwd:root,stdio:'ignore'});
+ const base=`http://127.0.0.1:${port}`;
+ await waitFor(async()=>(await fetch(base)).status<500,30000,'the Next.js server');
+ return {base,stop(){proc.kill('SIGKILL');}};
+}
+
+async function attrs(cdp,nodeId){const {attributes}=await cdp.send('DOM.getAttributes',{nodeId});const o={};for(let i=0;i<attributes.length;i+=2)o[attributes[i]]=attributes[i+1];return o;}
+async function nodeName(cdp,nodeId){return (await cdp.send('DOM.describeNode',{nodeId})).node.nodeName.toLowerCase();}
+async function query(cdp,nodeId,selector){return (await cdp.send('DOM.querySelectorAll',{nodeId,selector})).nodeIds;}
+async function click(cdp,nodeId){
+ await cdp.send('DOM.scrollIntoViewIfNeeded',{nodeId}).catch(()=>{});
+ const {quads}=await cdp.send('DOM.getContentQuads',{nodeId});
+ if(!quads?.length)return false;
+ const q=quads[0],x=(q[0]+q[2]+q[4]+q[6])/4,y=(q[1]+q[3]+q[5]+q[7])/4;
+ for(const type of ['mousePressed','mouseReleased'])await cdp.send('Input.dispatchMouseEvent',{type,x,y,button:'left',clickCount:1});
+ return true;
+}
+async function key(cdp,k,code,keyCode){for(const type of ['keyDown','keyUp'])await cdp.send('Input.dispatchKeyEvent',{type,key:k,code,windowsVirtualKeyCode:keyCode,nativeVirtualKeyCode:keyCode});}
+
+async function load(cdp,url){const loaded=cdp.once('Page.loadEventFired',20000);await cdp.send('Page.navigate',{url});await loaded;await sleep(150);}
+async function currentUrl(cdp){const h=await cdp.send('Page.getNavigationHistory');return h.entries[h.currentIndex].url;}
+async function documentRoot(cdp){return (await cdp.send('DOM.getDocument',{depth:-1,pierce:true})).root.nodeId;}
+
+export async function checkFormsWithoutJs(root,{base,review,paths=[],maxPages=40}={}){
+ const server=base?null:await startServer(root);
+ base??=server.base;
+ review??=isReview(JSON.parse(readFileSync(resolve(root,'content/site.json'),'utf8')));
+ const chrome=await launchChrome();
+ const cdp=new Cdp(chrome.page.webSocketDebuggerUrl);
+ const report={status:'PASS',base,review,javascript:'disabled',pages:[],forms:[],errors:[]};
+ try{
+  await cdp.open();
+  let log=null;
+  cdp.on(m=>{if(m.method==='Network.requestWillBeSent'&&log)log.push({id:m.params.requestId,url:m.params.request.url,method:m.params.request.method,postData:m.params.request.postData,hasPostData:m.params.request.hasPostData});});
+  for(const [method,params] of [['Page.enable'],['DOM.enable'],['Network.enable'],['Network.setCacheDisabled',{cacheDisabled:true}],['Emulation.setScriptExecutionDisabled',{value:true}],['Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false}]])await cdp.send(method,params);
+  const queue=[...new Set(['/',...paths])],seen=new Set(queue),formPages=[];
+  while(queue.length&&report.pages.length<maxPages){
+   const path=queue.shift();await load(cdp,base+path);
+   const doc=await documentRoot(cdp);
+   const forms=(await query(cdp,doc,'form')).length;
+   report.pages.push({path,forms});if(forms)formPages.push([path,forms]);
+   for(const a of await query(cdp,doc,'a[href]')){
+    const href=(await attrs(cdp,a)).href||'';
+    if(!/^\/(?!\/)/.test(href)||/^\/_next\//.test(href))continue;
+    const clean=href.split('#')[0].split('?')[0]||'/';
+    if(!seen.has(clean)){seen.add(clean);queue.push(clean);}
+   }
+  }
+  for(const [path,count] of formPages)for(let index=0;index<count;index++){
+   await load(cdp,base+path);
+   const doc=await documentRoot(cdp),form=(await query(cdp,doc,'form'))[index];
+   const formAttrs=await attrs(cdp,form);
+   const entry={path,index,method:(formAttrs.method||'get').toLowerCase(),action:formAttrs.action??null,inertWithoutJs:(await query(cdp,form,'fieldset[disabled]')).length>0,fields:[],submitted:false,finalUrl:null,requests:[],errors:[]};
+   const secrets=[],names=new Set();
+   let n=0;
+   for(const control of await query(cdp,form,'input, select, textarea')){
+    const a=await attrs(cdp,control),tag=await nodeName(cdp,control),type=tag==='input'?(a.type||'').toLowerCase():tag;
+    if(['hidden','submit','button','reset','image','file'].includes(type))continue;
+    if(a.name)names.add(a.name);
+    const token=`nojs${index}x${n++}secret`;
+    if(TEXT_TYPES.has(type)){await click(cdp,control);await cdp.send('Input.insertText',{text:type==='number'?String(424242+n):type==='email'?`${token}@example.com`:token});secrets.push(type==='number'?String(424242+n):token);}
+    else if(type==='radio'||type==='checkbox'){await click(cdp,control);if(a.name&&a.value)secrets.push(`${a.name}=${a.value}`);}
+    else if(type==='select'){await click(cdp,control);await key(cdp,'ArrowDown','ArrowDown',40);await key(cdp,'Enter','Enter',13);}
+    entry.fields.push({name:a.name||null,type});
+   }
+   log=[];
+   const submitter=(await query(cdp,form,'button:not([type=button]):not([type=reset]), input[type=submit], input[type=image]'))[0];
+   if(submitter)entry.submitted=await click(cdp,submitter);
+   else{const text=(await query(cdp,form,'input:not([type]), input[type=text], input[type=email], input[type=search]'))[0];if(text){await click(cdp,text);await key(cdp,'Enter','Enter',13);entry.submitted=true;}}
+   await sleep(2000);
+   const requests=log;log=null;
+   for(const r of requests)if(r.hasPostData&&r.postData==null)r.postData=(await cdp.send('Network.getRequestPostData',{requestId:r.id}).catch(()=>({postData:''}))).postData;
+   entry.finalUrl=await currentUrl(cdp);
+   entry.requests=requests.map(({url,method,postData})=>({url,method,postData:postData??null}));
+   const decoded=s=>{try{return decodeURIComponent((s||'').replace(/\+/g,' '));}catch{return s||'';}};
+   const leaks=s=>secrets.filter(v=>decoded(s).includes(v)).concat([...names].filter(nm=>new RegExp(`(^|[?&])${nm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}=`).test(decoded(s))).map(nm=>`${nm}=`));
+   const url=new URL(entry.finalUrl);
+   if(url.search)entry.errors.push(`The URL has a query string after submit: ${entry.finalUrl}`);
+   for(const v of leaks(entry.finalUrl))entry.errors.push(`The URL carries a field value: ${v}`);
+   for(const r of entry.requests)for(const v of [...leaks(r.url),...leaks(r.postData)])entry.errors.push(`A ${r.method} request to ${r.url} carries a field value: ${v}`);
+   if(review&&entry.requests.length)entry.errors.push(`Review mode sent ${entry.requests.length} request(s) after submit; a private preview must send none`);
+   if(entry.method!=='post'&&!entry.inertWithoutJs)entry.errors.push('The form can submit without JavaScript and is not method="post"');
+   report.forms.push(entry);report.errors.push(...entry.errors.map(e=>`${path} form ${index+1}: ${e}`));
+  }
+ }finally{cdp.close();chrome.stop();server?.stop();}
+ if(report.errors.length)report.status='FAIL';
+ return report;
+}
+
+if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
+ const args=process.argv.slice(2),at=args.indexOf('--url'),pi=args.indexOf('--paths');
+ const root=process.cwd();
+ const report=await checkFormsWithoutJs(root,{base:at>=0?args[at+1]:undefined,paths:pi>=0?args[pi+1].split(',').filter(Boolean):[]});
+ await mkdir(resolve(root,'evidence'),{recursive:true});
+ await writeFile(resolve(root,'evidence/forms-nojs.json'),JSON.stringify(report,null,2)+'\n');
+ console.log(`${report.status}: ${report.forms.length} visitor form(s) on ${report.pages.length} page(s) submitted with JavaScript disabled (${report.review?'review mode':'not review mode'}).`);
+ for(const f of report.forms)console.log(`  ${f.path} form ${f.index+1}: method=${f.method}${f.inertWithoutJs?' inert-without-js':''} fields=${f.fields.map(x=>x.name||x.type).join(',')||'none'} submitted=${f.submitted} finalUrl=${f.finalUrl} requestsAfterSubmit=${f.requests.length}`);
+ for(const e of report.errors)console.error(`• ${e}`);
+ if(report.status!=='PASS')process.exitCode=1;
+}

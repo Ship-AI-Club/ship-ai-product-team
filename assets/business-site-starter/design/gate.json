@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "offerReview": {
+    "verdict": "pending",
+    "reviewer": "",
+    "offer": "",
+    "primaryCta": "",
+    "proofPlan": "",
+    "sources": []
+  },
+  "gate1": {
+    "scope": "hero and first proof section only",
+    "status": "pending",
+    "contractSha256": "",
+    "implementer": "",
+    "render": {
+      "where": "cloud",
+      "runUrl": "",
+      "modelSelector": "",
+      "fast": null,
+      "fidelity": "production",
+      "skillsRead": []
+    },
+    "rounds": []
+  },
+  "gate2": {
+    "scope": "full site, desktop and phone",
+    "status": "pending",
+    "contractSha256": "",
+    "implementer": "",
+    "render": {
+      "where": "cloud",
+      "runUrl": "",
+      "modelSelector": "",
+      "fast": null,
+      "fidelity": "production",
+      "skillsRead": []
+    },
+    "rounds": []
+  }
+}
