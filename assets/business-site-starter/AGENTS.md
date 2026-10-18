@@ -27,6 +27,10 @@ This starter is a neutral technical shell. It has no page design. `app/page.jsx`
 5. Build the rest of the approved site. Run npm run check and npm run build (the build runs npm run verify:gate). Walk desktop/phone journeys and keyboard/error/success states in a real browser.
 6. Gate 2: the same reviewers pass the full desktop and phone renders; npm run verify:owner-review must pass. Then the PM asks the owner to review. Deployment and production integrations are separate decisions.
 
+Gate evidence is bound to exact inputs. Before each review round, run `npm run gate:fingerprint` and record its `sourceSha256` and `briefSha256` on the round; each reviewer cites both, and each rule verdict is exactly PASS or REJECT. Editing app/, components/, lib/, content/, public/, styles, config, the contract or brief/project.json after the render changes the fingerprint and voids that PASS until the changed render is reviewed again. The Frontend agent who built the render never reviews it.
+
+This starter is JavaScript. It has no TypeScript and no typecheck script. `npm run check` and `next build` compile JSX and run tests; neither is a type check. Report "no typecheck available", never "typecheck passed".
+
 Do not turn the contract into a data-driven section builder. design/contract.md and design/gate.json record decisions and review state; the page itself is normal Next.js code written for this business.
 
 ## Content
@@ -41,11 +45,13 @@ Only approved content appears in public routes/listings/sitemaps. Preview is noi
 
 A first-time owner's draft uses `mode: "review"` with `isDemo: false`. It builds from the owner's answers (`intake.answers` with `source: "owner"`) plus recommendations marked `status: "proposed"` with a `source` and a `rationale`. Never write an approval the owner did not give, and never set `isDemo` true for a real business; validation and the design gate refuse both. Review mode adds a visible private-draft note, noindex meta, robots disallow and an `X-Robots-Tag` header. The build refuses to run in a hosting deploy environment, and `npm run verify:publish` refuses review mode. Show pricing only when approved, or with `priceLabel` from lib/brief.mjs, which marks a proposed price as not final. Production (`mode: "production"`, checked by `npm run verify:production`) needs the owner's final approval of positioning, product scope, evidence sources and any visible pricing.
 
-Publication requires mode production, isDemo:false, publicationApproved:true, a real HTTPS siteUrl and owner review; these flags do not deploy or substitute for actual approval.
+A production brief cannot build without those approvals: `npm run build` runs `verify:release` first, which rejects missing approvals locally and, in a hosting deploy environment, requires full publication readiness.
+
+Publication requires mode production, isDemo:false, publicationApproved:true, a real HTTPS siteUrl, a Gate 2 PASS and `ownerApproval` in design/gate.json recording who approved, when, and the `sourceSha256` and `briefSha256` of the exact reviewed render. `npm run verify:publish` fails if the current source or brief differs from that approved artifact. These flags do not deploy or substitute for actual approval.
 
 ## Visitor experience
 
-Every visitor form uses `components/VisitorForm.jsx`, never a raw `<form>`. It always uses `method="post"` with a same-site path or HTTPS action. A local-only form stays disabled until JavaScript runs, so a browser without JavaScript cannot fall back to a GET submit that puts answers in the URL. In review mode, sending forms show "Preview only" and send nothing. After a build, `npm run verify:forms` submits every form in headless Chrome with JavaScript disabled and fails if a value reaches the URL or a request, or if review mode sends any request.
+Every visitor form uses `components/VisitorForm.jsx`, never a raw `<form>`. It always uses `method="post"` with a same-site path or HTTPS action. A local-only form stays disabled until JavaScript runs, so a browser without JavaScript cannot fall back to a GET submit that puts answers in the URL. In review mode, sending forms show "Preview only" and send nothing. After a build, `npm run verify:forms` submits every form in headless Chrome with JavaScript disabled and fails if a value reaches the URL or a request, or if review mode sends any request. It runs only against a local build it starts (or a `--url` on 127.0.0.1/localhost), intercepts every request after submit inside the browser and answers it with a stub, so no lead reaches a server. It refuses to submit a form whose action is another origin and reports it. A non-review form's POST body to its own action is recorded as intentional, not as a leak.
 
 Replace /start with the approved real journey. Never fake account creation, payment, booking, message delivery or storage. For relevant leads, use the parent kit's disabled webhook-guide.md; keep keys server-side, validate/dedupe and distinguish accepted work from delivery. Optional Gmail needs the connected bot and explicit owner-enabled policy. No real sends from tests. Account products should focus on genuine signup/onboarding.
 

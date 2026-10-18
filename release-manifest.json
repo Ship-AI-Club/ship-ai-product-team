@@ -73,8 +73,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "4c602efccaebd9d2ce2a2030fb24d7e27569fe45b3922e5fbee0bb2d575d0725",
-      "bytes": 4740
+      "sha256": "3f6542b3a33632877bcffad2aed7c8cfebec3d44c3bffbc130d93e22751635aa",
+      "bytes": 4833
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -103,13 +103,13 @@
     },
     {
       "path": "assets/business-site-starter/AGENTS.md",
-      "sha256": "b6246ae1c5557846c276f5481820fbc1e5cce6be7927a2bb16a539c0e30d38bb",
-      "bytes": 14694
+      "sha256": "e9344ed1c5a299a254b38d4a07d84e5293f3638f4bd443ee555d018a29a8cccb",
+      "bytes": 16233
     },
     {
       "path": "assets/business-site-starter/CLOUD-HANDOFF.md",
-      "sha256": "0ad95b4ab4d97e4c48c550c3228fca37ac5ec3fb0a5787b49df1297f7e844712",
-      "bytes": 4420
+      "sha256": "8b216468971eac30cf141e1c70d85445811850609099f8d33f7a4480af2f3eba",
+      "bytes": 4612
     },
     {
       "path": "assets/business-site-starter/ENGINEERING-SETUP.md",
@@ -118,8 +118,8 @@
     },
     {
       "path": "assets/business-site-starter/README.md",
-      "sha256": "2a8ba65de9f0f63e2eb848154befc4d65287e1d63f04ad186d85db254883f05d",
-      "bytes": 6943
+      "sha256": "8d958bb3e7e146150ef2f3bf7ca96bf91e4588a1bfff2113e7f003fa1a3422df",
+      "bytes": 7206
     },
     {
       "path": "assets/business-site-starter/app/about/page.jsx",
@@ -218,8 +218,8 @@
     },
     {
       "path": "assets/business-site-starter/design/gate.json",
-      "sha256": "872401a23af44de73e2f8678c3c00e10d3407ac23d858cb1573944c90e025af2",
-      "bytes": 824
+      "sha256": "650bdaab4dba6bc3c9eb6f1be787a3ac7e70acbaf35a8561fba2966d8988467d",
+      "bytes": 959
     },
     {
       "path": "assets/business-site-starter/examples/b2b.json",
@@ -238,8 +238,8 @@
     },
     {
       "path": "assets/business-site-starter/lib/design-gate.mjs",
-      "sha256": "60d34f5a02b06063981c977efd71df7896f23360095093e5c140566e217afb12",
-      "bytes": 10906
+      "sha256": "c685d0be644bfb619f93ebf4bd01dc812a232f4377e36a05cc8ddab763b83594",
+      "bytes": 13048
     },
     {
       "path": "assets/business-site-starter/lib/forms.mjs",
@@ -263,8 +263,8 @@
     },
     {
       "path": "assets/business-site-starter/package.json",
-      "sha256": "da68d5768642d817136de3887e9e12f6e7e1206c19932da7bb3595797ca4191b",
-      "bytes": 1227
+      "sha256": "7bcdb7ff7cf83f95a92fd8312985d1850d0576b6d2a940b1bdb261b5eb7c8068",
+      "bytes": 1304
     },
     {
       "path": "assets/business-site-starter/scripts/configure.mjs",
@@ -273,8 +273,8 @@
     },
     {
       "path": "assets/business-site-starter/scripts/verify-design-gate.mjs",
-      "sha256": "c21cad1f8fe37381f1b93b87ce8f224f1b5888765673ff191607855e29e47fae",
-      "bytes": 962
+      "sha256": "cef81ee8339d379450e40895a7ca915fbeea449d133a521d3dc5433b03413a9d",
+      "bytes": 1221
     },
     {
       "path": "assets/business-site-starter/scripts/verify-design-skills.mjs",
@@ -283,18 +283,18 @@
     },
     {
       "path": "assets/business-site-starter/scripts/verify-forms-nojs.mjs",
-      "sha256": "53e25b471a9814ae4b9925a18f21e68c42b59b0026f22073a91c75cce280ba56",
-      "bytes": 11233
+      "sha256": "572f5634f42b06412d1695882220beb9a73984da6e7b6e610faa13dde41b0348",
+      "bytes": 12971
     },
     {
       "path": "assets/business-site-starter/scripts/verify-release.mjs",
-      "sha256": "017b00b8dc28c1c53bdf51f4f557c5e40d20a46c522c9166995a8f24d33b9a8e",
-      "bytes": 1531
+      "sha256": "0c40866db370b1bc64748b7bb03095445c44e1a7faf6975e43b0898c06122ea9",
+      "bytes": 3490
     },
     {
       "path": "assets/business-site-starter/skill-sources.json",
-      "sha256": "06d6c9f8691ef36a71f40b7338bb77c77825352e5dfb99eb3d88bb7e3b055d04",
-      "bytes": 56487
+      "sha256": "f7860bfabf8db1af651be6875bf0a8a0c02c6db5812cc713843dec131716ff87",
+      "bytes": 56563
     },
     {
       "path": "assets/business-site-starter/tests/brief.test.mjs",
@@ -303,8 +303,8 @@
     },
     {
       "path": "assets/business-site-starter/tests/design-gate.test.mjs",
-      "sha256": "718a1f5208b351a3a5ef2a046437687000996bce123d47789a42392318c18991",
-      "bytes": 14492
+      "sha256": "b79959df618c7e308d32248125e01825c1a49c637ae5d22d981b07b0e9a6ebd6",
+      "bytes": 18457
     },
     {
       "path": "assets/business-site-starter/tests/design-skills.test.mjs",
@@ -333,8 +333,8 @@
     },
     {
       "path": "assets/business-site-starter/tests/review-mode.test.mjs",
-      "sha256": "0acde86bc8343ed60332385f65748111efa9fa053e8b7cbd67f7b7af7324f44f",
-      "bytes": 6768
+      "sha256": "243eb19d8a9386d219716c9ee43db788cf924b4897ccf7f9fb4649fb3a139f10",
+      "bytes": 7662
     },
     {
       "path": "design-skill-library.json",
@@ -423,13 +423,13 @@
     },
     {
       "path": "scripts/build-release-manifest.mjs",
-      "sha256": "cac2f05955d556f85ee53cc5016a04dcf362febe4b306b3e81b91d7c066a3aa0",
-      "bytes": 2728
+      "sha256": "4b1db2af76f73be37bcc2443aa896c8abbc88190bbe5cd5150739b96abf3d140",
+      "bytes": 2787
     },
     {
       "path": "scripts/prepare-project.mjs",
-      "sha256": "d45659f61cf7a538689c1dd7a4dd69874cf79a1e62d8959eb4dea86f03bc9bb2",
-      "bytes": 2698
+      "sha256": "4f6c15ba5a72d591a941c5ec4b7dc380df5a47e97b0e4345e75f51434d5a9308",
+      "bytes": 2872
     },
     {
       "path": "scripts/verify-plugin.mjs",
@@ -1143,8 +1143,8 @@
     },
     {
       "path": "skills/ship-ai-design-gate/SKILL.md",
-      "sha256": "ddb6c1100149f1f9f18381f5f18717d41980ab3b4bac6fb29add77bdf1aec908",
-      "bytes": 7268
+      "sha256": "c62c75c1d3915722fef63d0def7352b609c1cf3499416e3024323236b17b578c",
+      "bytes": 8025
     },
     {
       "path": "skills/ship-ai-frontend-engineer/SKILL.md",
@@ -1353,13 +1353,13 @@
     },
     {
       "path": "tests/browser/forms-nojs.test.mjs",
-      "sha256": "9a944eb63da2b8e259f1985c6611bdbfa957a45eb9302ac5f051ffe5f639574b",
-      "bytes": 4695
+      "sha256": "da192ba96a3141e90681fd1be07024ec6e28e9c54ede61276de756fb741b8cbd",
+      "bytes": 6884
     },
     {
       "path": "tests/plugin.test.mjs",
-      "sha256": "308d7a566edc9a6b4b50aaf48cabf0d03be393c5d1bb7159d5bb6fdf05161c0d",
-      "bytes": 15799
+      "sha256": "0ab7f47317e7f2364d631dbb9c2d863a65fa554d990a613b63615d411d4f81ba",
+      "bytes": 17693
     }
   ],
   "proofScope": "Presence and byte integrity; not proof of installation, reading, application or design quality."

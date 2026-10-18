@@ -33,7 +33,7 @@ Send the one-page contract directly to Frontend with the PM copied. Group messag
 ## 2. Gate 1: hero and first proof section, reviewed until both pass
 
 1. In Cloud, Frontend builds ONLY the hero and first proof section as production components, with the full relevant skills and references actually read and applied. List those files in `gate1.render.skillsRead`. Set `fidelity` to `production`. A low-fidelity mock never passes and is never called premium.
-2. Run `npm run build:review`, start it and capture the initial render: desktop 1440px and phone 390px, with a real browser. Save to `design/renders/gate1/round-1/` and record path, width and sha256.
+2. Run `npm run build:review`, start it and capture the initial render: desktop 1440px and phone 390px, with a real browser. Save to `design/renders/gate1/round-1/` and record path, width and sha256. Run `npm run gate:fingerprint` on the exact build you rendered and record its `sourceSha256` and `briefSha256` on the round.
 3. Record the Cloud run URL and the actual model selector text (for example `Claude Opus 5.5 Medium`) with Fast off in `gate1.render`. Name the `implementer`.
 4. A separate design reviewer and a separate marketing reviewer each inspect the actual screenshots. Neither is the implementer, and they are not the same reviewer. Each writes a critique for every reject criterion, PASS or REJECT, with a specific correction for each REJECT:
    - `composition`: weak hierarchy or a first screen without one clear focus;
@@ -42,15 +42,15 @@ Send the one-page contract directly to Frontend with the PM copied. Group messag
    - `copy`: dense, vague or unapproved copy;
    - `proof`: weak, missing or unsupported proof;
    - `cta`: a CTA that does not match the offer and journey.
-   Each also checks 3-5 contract rules: `skill`, `rule`, implemented `decision`, `screenshot` (desktop or phone), `region`, `verdict`, and a `fix` on REJECT. Each cites the sha256 of every screenshot reviewed.
+   Each also checks 3-5 contract rules: `skill`, `rule`, implemented `decision`, `screenshot` (desktop or phone), `region`, `verdict`, and a `fix` on REJECT. Each rule verdict is exactly `PASS` or `REJECT`; anything else fails. Each review cites the sha256 of every screenshot reviewed and the round's `sourceSha256` and `briefSha256`.
 5. Any REJECT goes back to Frontend internally. Frontend revises in the same run, re-renders desktop and phone as the next round (`round-2/`, ...) and records `revision.summary` and `revision.addresses`. Both reviewers critique the new render. Repeat until both PASS. A strong first render may pass in round 1.
-6. Set `gate1.status` to PASS only when the latest round has both PASS verdicts. Save `contractSha256`. A changed contract or screenshot reopens the gate. Expansion stays blocked until PASS.
+6. Set `gate1.status` to PASS only when the latest round has both PASS verdicts. Save `contractSha256`. A changed contract or screenshot reopens the gate, and so does any edit to page source, styles, content, config or brief/project.json after the final round: the fingerprint no longer matches, so build, render and review again. Expansion stays blocked until PASS.
 
 The evidence is the full loop: the initial render, both written critiques in every round, each revision with its re-render, and the final passing render on desktop and phone.
 
 ## 3. Gate 2: full site, same loop
 
-After Gate 1 PASS, build the remaining approved sections and routes. Render the full site on desktop and phone under `design/renders/gate2/` and run the same review loop in `gate2`. `npm run verify:owner-review` must pass before the PM shows the owner anything.
+After Gate 1 PASS, build the remaining approved sections and routes. Render the full site on desktop and phone under `design/renders/gate2/` and run the same review loop in `gate2`. `npm run verify:owner-review` must pass before the PM shows the owner anything. When the owner approves publication, the PM records `ownerApproval` in design/gate.json (who, when, their message, and the Gate 2 final round's `sourceSha256` and `briefSha256`). `npm run verify:publish` and a production build in a hosting deploy environment fail unless the current source and brief match that approved artifact.
 
 ## Design skill precedence
 

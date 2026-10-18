@@ -37,6 +37,6 @@ The supplied YC Interface Craft files and user-provided design instructions are 
 Existing source snapshots and approvals take priority over generic advice. Do not copy another business identity or fabricate proof.
 No model run, deployment, external send, signup, new account or recurring routine is created by installing this package.
 
-Dr Eggbot preferences retained: one job per bot, concise replies, a full live profile export, PStack setup, project verification, Cloud delegation, and a real typecheck, targeted tests and a production build before any push.
+Dr Eggbot preferences retained: one job per bot, concise replies, a full live profile export, PStack setup, project verification, Cloud delegation, and the repository's typecheck where one exists (the JavaScript starter has none; a JSX build is not a typecheck), targeted tests and a production build before any push.
 One Dr Eggbot rule is replaced: instead of never asking the owner about models, the PM asks once whether Sonnet 5.5 Medium or Opus 5.5 Medium builds the website, and every bot reuses that answer.
 Workshop-specific choices take priority: PM coordinates instead of a private loops bot; no recurring routines are copied.
