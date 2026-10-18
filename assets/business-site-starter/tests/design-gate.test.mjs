@@ -330,3 +330,17 @@ test('Gate 2 covers every page and visitor state in the contract inventory on de
   assert.match(errorsOf(p,'owner-review').join('\n'),/must name the inventory experiences it shows/);
  }finally{await p.done();}
 });
+
+test('a visitor-visible status, approved flag or mode change always changes the fingerprint',async()=>{
+ const p=await project();
+ try{
+  const base={source:sourceFingerprint(p.root).sha256,brief:briefFingerprint(p.root)};
+  const original=await readFile(join(p.root,'brief/project.json'),'utf8');
+  for(const [what,change] of [['positioning.status',b=>{b.positioning.status=b.positioning.status==='approved'?'proposed':'approved';}],['business.pricing.approved',b=>{b.business.pricing.approved=!b.business.pricing.approved;}],['mode',b=>{b.mode=b.mode==='review'?'production':'review';}]]){
+   const b=JSON.parse(original);change(b);
+   for(const file of ['brief/project.json','content/site.json'])await writeFile(join(p.root,file),JSON.stringify(b));
+   assert.notEqual(briefFingerprint(p.root),base.brief,`${what} must change briefSha256`);
+   assert.notEqual(sourceFingerprint(p.root).sha256,base.source,`${what} must change sourceSha256`);
+  }
+ }finally{await p.done();}
+});
