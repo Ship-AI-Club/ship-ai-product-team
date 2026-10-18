@@ -103,13 +103,13 @@
     },
     {
       "path": "assets/business-site-starter/AGENTS.md",
-      "sha256": "d7c3346d7ed0bf7b0cf176bc938563f58204caf1ccbb2949f3ff0635d9967a6d",
-      "bytes": 16570
+      "sha256": "6b3936bebfcfa9b75cfc5c2f0adbf5adc88b17dbf2aa10a9df8578a322a9ab53",
+      "bytes": 17285
     },
     {
       "path": "assets/business-site-starter/CLOUD-HANDOFF.md",
-      "sha256": "7a5c955e1a6c3cd09eb8b631d39ef096181c87e89295002dd4320c2453633692",
-      "bytes": 4788
+      "sha256": "9a45fb7cdb6b164762b348f964151c521c94bcef52f5b4f14b7ac7fcdc1f918d",
+      "bytes": 4895
     },
     {
       "path": "assets/business-site-starter/ENGINEERING-SETUP.md",
@@ -233,13 +233,13 @@
     },
     {
       "path": "assets/business-site-starter/lib/brief.mjs",
-      "sha256": "ef0b13510beda2db35a9b465a194041d8d5fa7fb32952b7c61d98380d92e1865",
-      "bytes": 10273
+      "sha256": "d7fa7e80a5494238b8153924e1d474718227d82ebb10273858be83df3403ba95",
+      "bytes": 11093
     },
     {
       "path": "assets/business-site-starter/lib/design-gate.mjs",
-      "sha256": "08ada4ac5556352c777009fc7777cf09dba525a399130dc63387de6291e7985c",
-      "bytes": 16614
+      "sha256": "b02dfe72587b0c752091cd1c708baa864285f4bc0b43d5cad7b554ee5a25d019",
+      "bytes": 17582
     },
     {
       "path": "assets/business-site-starter/lib/forms.mjs",
@@ -303,8 +303,8 @@
     },
     {
       "path": "assets/business-site-starter/tests/design-gate.test.mjs",
-      "sha256": "f37dbacf230c04b93d9006563cfb613ec06f722e3144228c01ccb7739dc81335",
-      "bytes": 21980
+      "sha256": "ab2e14d790927f874303b8258302f0aa2287ce99bc411b8d4116e3d8e54a85b4",
+      "bytes": 22199
     },
     {
       "path": "assets/business-site-starter/tests/design-skills.test.mjs",
@@ -330,6 +330,11 @@
       "path": "assets/business-site-starter/tests/model-choice.test.mjs",
       "sha256": "aadc657ea9a0c0789a49d37c46effbfc3b8abe53a0b41f573b37b9270425601d",
       "bytes": 2335
+    },
+    {
+      "path": "assets/business-site-starter/tests/release-path.test.mjs",
+      "sha256": "82888f04e13a712d8a99ce800fcf48460f08a5e1944501d03da05e48f0a28809",
+      "bytes": 10879
     },
     {
       "path": "assets/business-site-starter/tests/review-mode.test.mjs",
@@ -1143,8 +1148,8 @@
     },
     {
       "path": "skills/ship-ai-design-gate/SKILL.md",
-      "sha256": "1f60e2d14de64a9da5af9d20a7ccb38ac959dd222262a81ae9e61f033daea36a",
-      "bytes": 8667
+      "sha256": "7a5a940729f09765ff828257260ede30f621fb7bd3cd66ad6b9dcb5557b65043",
+      "bytes": 9374
     },
     {
       "path": "skills/ship-ai-frontend-engineer/SKILL.md",
