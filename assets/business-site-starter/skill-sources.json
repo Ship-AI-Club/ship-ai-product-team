@@ -880,10 +880,10 @@
     ]
   ],
   "original": {
-    "author": "the product team plugin authors",
+    "author": "Ship AI",
     "license": {
       "spdx": "MIT",
-      "file": "LICENSE in the plugin package"
+      "file": ".agents/LICENSE"
     },
     "note": "Written for this plugin; not vendored from an upstream source.",
     "files": [
@@ -904,5 +904,5 @@
       ".agents/skills/workshop-owner-language/SKILL.md"
     ]
   },
-  "note": "Mirror of the plugin sources.json; paths are where prepare-project installs each file."
+  "note": "Mirror of the plugin sources.json. Paths are relative to a prepared project, where prepare-project installs each file and copies the plugin LICENSE, THIRD_PARTY_NOTICES.md and licenses/ into .agents/."
 }

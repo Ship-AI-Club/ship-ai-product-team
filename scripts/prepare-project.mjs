@@ -18,6 +18,7 @@ for(const name of await readdir(resolve(root,'assets/business-site-starter'))){
 }
 await cp(resolve(root,'skills'),resolve(target,'.agents/skills'),{recursive:true,errorOnExist:true,force:false});
 await cp(resolve(root,'role-map.json'),resolve(target,'.agents/role-map.json'));
+for(const name of ['LICENSE','THIRD_PARTY_NOTICES.md','licenses'])await cp(resolve(root,name),resolve(target,'.agents',name),{recursive:true,errorOnExist:true,force:false});
 const release=JSON.parse(await readFile(resolve(root,'release-manifest.json'),'utf8'));
 const manifest={version:release.version,expectedSkills:release.skills,files:release.files.filter(f=>f.path.startsWith('skills/')).map(f=>({...f,path:`.agents/${f.path}`}))};
 await writeFile(resolve(target,'.agents/ship-ai-skills.json'),JSON.stringify(manifest,null,2)+'\n');

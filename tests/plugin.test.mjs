@@ -62,7 +62,8 @@ test('no demo client, brand names, run IDs or bot IDs exist in the reusable sour
  const hits=[];
  for(const file of await filesUnder(root,textFile))for(const what of findPrivateText(await readFile(file,'utf8')))hits.push(`${file.slice(root.length)}: ${what}`);
  assert.deepEqual(hits,[]);
- for(const file of await filesUnder(resolve(root,'assets/business-site-starter'),textFile))assert.ok(!/ship ai/i.test(await readFile(file,'utf8')),`Ship AI branding in the starter: ${file}`);
+ // skill-sources.json keeps the plugin's copyright attribution; that is provenance, not starter branding.
+ for(const file of await filesUnder(resolve(root,'assets/business-site-starter'),textFile))if(!file.endsWith('/skill-sources.json'))assert.ok(!/ship ai/i.test(await readFile(file,'utf8')),`Ship AI branding in the starter: ${file}`);
 });
 
 test('every vendored file has source, version and license; fonts keep their OFL beside them',async()=>{
@@ -185,5 +186,25 @@ test('visitor forms cannot leak answers without JavaScript in the starter or a p
   for(const f of ['components/VisitorForm.jsx','lib/forms.mjs','scripts/verify-forms-nojs.mjs','tests/forms.test.mjs'])await readFile(resolve(target,f));
   assert.match(JSON.parse(await readFile(resolve(target,'package.json'))).scripts['verify:forms'],/verify-forms-nojs/);
   assert.match(await readFile(resolve(target,'app/start/experience.jsx'),'utf8'),/<VisitorForm/);
+ }finally{await rm(temp,{recursive:true,force:true});}
+});
+
+test('a prepared project resolves every license and provenance path it records',async()=>{
+ const temp=await mkdtemp(resolve(tmpdir(),'ship-ai-closure-'));const target=resolve(temp,'site');
+ const sha=b=>createHash('sha256').update(b).digest('hex');
+ try{
+  execFileSync(process.execPath,[resolve(root,'scripts/prepare-project.mjs'),'--target',target]);
+  assert.equal(sha(await readFile(resolve(target,'.agents/LICENSE'))),sha(await readFile(resolve(root,'LICENSE'))));
+  assert.match(await readFile(resolve(target,'.agents/LICENSE'),'utf8'),/MIT License[^]*Copyright \(c\) 2026/);
+  assert.equal(sha(await readFile(resolve(target,'.agents/THIRD_PARTY_NOTICES.md'))),sha(await readFile(resolve(root,'THIRD_PARTY_NOTICES.md'))));
+  const sources=JSON.parse(await readFile(resolve(target,'skill-sources.json'),'utf8'));
+  const missing=[],changed=[];
+  const need=async(p,hash)=>{if(!p)return;try{const b=await readFile(resolve(target,p));if(hash&&sha(b)!==hash)changed.push(p);}catch{missing.push(p);}};
+  for(const e of sources.skillSources){await need(e.license?.file);await need(e.license?.notices);for(const f of e.files){await need(f.file,f.sha256);await need(f.copyOf);}}
+  await need(sources.original.license.file);for(const f of sources.original.files)await need(f);
+  assert.deepEqual(missing,[],'paths recorded in skill-sources.json must exist in the prepared project');
+  assert.deepEqual(changed,[]);
+  assert.equal(sources.original.license.file,'.agents/LICENSE');assert.equal(sources.original.author,'Ship AI');
+  for(const lic of ['emilkowalski/LICENSE','coreyhaines31/LICENSE','anthropics/THIRD_PARTY_NOTICES.md'])await readFile(resolve(target,'.agents/licenses',lic));
  }finally{await rm(temp,{recursive:true,force:true});}
 });

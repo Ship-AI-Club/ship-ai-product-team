@@ -16,7 +16,7 @@ for(const path of ['design-skill-library.json','assets/business-site-starter/des
 
 const sources=JSON.parse(await readFile(resolve(root,'sources.json'),'utf8'));
 const inProject=p=>typeof p==='string'&&p.startsWith('skills/')?`.agents/${p}`:p;
-const starterSources={...sources,note:'Mirror of the plugin sources.json; paths are where prepare-project installs each file.',skillSources:sources.skillSources.map(e=>({...e,...(e.license?{license:{...e.license,file:inProject(e.license.file),notices:inProject(e.license.notices)}}:{}),files:e.files.map(f=>({...f,file:inProject(f.file),...(f.copyOf?{copyOf:inProject(f.copyOf)}:{})}))})),original:{...sources.original,author:'the product team plugin authors',license:{...sources.original.license,file:'LICENSE in the plugin package'},files:sources.original.files.map(inProject)}};
+const starterSources={...sources,note:'Mirror of the plugin sources.json. Paths are relative to a prepared project, where prepare-project installs each file and copies the plugin LICENSE, THIRD_PARTY_NOTICES.md and licenses/ into .agents/.',skillSources:sources.skillSources.map(e=>({...e,...(e.license?{license:{...e.license,file:inProject(e.license.file),notices:inProject(e.license.notices)}}:{}),files:e.files.map(f=>({...f,file:inProject(f.file),...(f.copyOf?{copyOf:inProject(f.copyOf)}:{})}))})),original:{...sources.original,license:{...sources.original.license,file:'.agents/LICENSE'},files:sources.original.files.map(inProject)}};
 await writeFile(resolve(root,'assets/business-site-starter/skill-sources.json'),JSON.stringify(starterSources,null,2)+'\n');
 
 const listed=execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z'],{cwd:root}).toString().split('\0').filter(Boolean);
