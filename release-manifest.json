@@ -283,8 +283,8 @@
     },
     {
       "path": "assets/business-site-starter/scripts/verify-forms-nojs.mjs",
-      "sha256": "572f5634f42b06412d1695882220beb9a73984da6e7b6e610faa13dde41b0348",
-      "bytes": 12971
+      "sha256": "90fb75aa412b368f5c15edf74d3b90de05ab9651c5872d7666c1edd58bc5f569",
+      "bytes": 15298
     },
     {
       "path": "assets/business-site-starter/scripts/verify-release.mjs",
@@ -303,8 +303,8 @@
     },
     {
       "path": "assets/business-site-starter/tests/design-gate.test.mjs",
-      "sha256": "ab2e14d790927f874303b8258302f0aa2287ce99bc411b8d4116e3d8e54a85b4",
-      "bytes": 22199
+      "sha256": "ae34b44635f277661d0872d6d953951473abf1ec8025a79244898ad74851f3cc",
+      "bytes": 23180
     },
     {
       "path": "assets/business-site-starter/tests/design-skills.test.mjs",
