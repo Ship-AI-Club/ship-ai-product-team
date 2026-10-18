@@ -3,7 +3,7 @@
     "designer",
     "frontend"
   ],
-  "instructions": "Product Designer and Frontend Engineer use the same actual design skill library, versions and reference files. Both load YC Interface Craft with all seven supplied files; Intentional UI Design; Illustration Design Grammar; Emil design engineering and relevant animation skills; frontend-design; product-marketing; lead-magnets; copywriting; copy-editing; and conversion guidance. Keep the full files available in the shared project. A link or summary is not a loaded skill. Use design-skill-library.json to compare file hashes and preserve licenses. Read the instructions relevant to the current web task; do not load unrelated native-app guidance. Frontend keeps its engineering, SEO, build and test skills as well. It implements the selected type, spacing, color, imagery, interaction and motion rules with the Designer. Do not invent a new direction or repeat exploration after approval. Record the loaded paths, versions and hashes in team evidence and send an acknowledgment to the PM. Review the actual implementation together and fix differences before owner review.",
+  "instructions": "Product Designer and Frontend Engineer use the same full design skill library, versions and reference files. Every full file stays available in the shared project and the Cloud workspace; available does not mean loaded. Follow the precedence in ship-ai-design-gate: YC Interface Craft leads visual direction (read its SKILL.md and only the 3-5 matching research records); Intentional UI Design sets the quality floor; frontend-design guides composition and type. Load Illustration Design Grammar, motion (Emil design engineering and the animation skills) and component references only when the chosen design needs them, and record that choice in the design contract. product-marketing, copywriting, copy-editing and conversion guidance shape the copy. A link or summary is not a loaded skill. Use design-skill-library.json to compare file hashes and preserve licenses. Do not load unrelated native-app guidance. Frontend keeps its engineering, SEO, build and test skills. It implements the contracted type, spacing, color, imagery, interaction and motion as components written for this page. Do not invent a new direction or repeat exploration after approval. Record the paths actually read in evidence/design-skills-read.md. The Designer and a marketing reviewer pass Gate 1 and Gate 2 on actual screenshots before the owner review.",
   "skills": [
     "yc-interface-craft",
     "intentional-ui-design",
@@ -296,7 +296,7 @@
     {
       "skill": "workshop-owner-language",
       "path": ".agents/skills/workshop-owner-language/SKILL.md",
-      "sha256": "0ca29d37177342ef48a1261181c5f518a779f1883e81a5239f6f72632c616a3a"
+      "sha256": "5bd9662e758552211a77891d7472daecf991bc36b31e948a3969d32676e190e2"
     }
   ],
   "relativeTo": "starter root"
