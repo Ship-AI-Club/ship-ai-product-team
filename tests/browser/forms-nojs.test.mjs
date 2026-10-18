@@ -48,6 +48,27 @@ test('prepared starter: no visitor answers reach a URL or a request with JavaScr
    assert.equal(report.status,'PASS');
   });
 
+  await t.test('no real write: a sending form is stubbed in the browser, an external action is refused, and a live base is rejected',async()=>{
+   const marker=resolve(site,'lead-written.txt');
+   await mkdir(resolve(site,'app/api/lead'),{recursive:true});
+   await writeFile(resolve(site,'app/api/lead/route.js'),"import {writeFileSync} from 'node:fs';\nexport async function POST(request){writeFileSync('lead-written.txt',await request.text());return new Response('stored');}\n");
+   await mkdir(resolve(site,'app/lead-probe'),{recursive:true});
+   await writeFile(resolve(site,'app/lead-probe/page.jsx'),"import VisitorForm from '../../components/VisitorForm';\nexport default function Page(){return <><VisitorForm action=\"/api/lead\"><label>Email <input type=\"email\" name=\"email\"/></label><button type=\"submit\">Send</button></VisitorForm><VisitorForm action=\"https://example.com/lead\"><label>Name <input name=\"name\"/></label><button type=\"submit\">Send</button></VisitorForm></>}\n");
+   nextBuild(site);
+   const report=await check({review:false,paths:['/lead-probe']});show('no real write',report);
+   const [local,external]=report.forms.filter(f=>f.path==='/lead-probe');
+   assert.ok(local.submitted&&local.requests.length>0,'the same-origin POST was attempted and intercepted');
+   assert.ok(local.requests.every(r=>r.stubbed));
+   assert.ok(local.requests.some(r=>r.intentionalPost&&r.method==='POST'&&r.postData.includes('secret')),'the POST body is classified as intentional, not a leak');
+   assert.equal(new URL(local.finalUrl).search,'');assert.deepEqual(local.errors,[]);
+   assert.equal(external.submitted,false);assert.deepEqual(external.requests,[]);
+   assert.ok(external.errors.some(e=>e.startsWith('Refused to submit')));
+   assert.equal(report.status,'FAIL','an external action fails the check rather than being sent');
+   assert.equal(existsSync(marker),false,'the lead route was never reached');
+   await assert.rejects(check({base:'https://example.com'}),/Refusing to submit forms on https:\/\/example.com/);
+   await rm(resolve(site,'app/api'),{recursive:true,force:true});await rm(resolve(site,'app/lead-probe'),{recursive:true,force:true});
+  });
+
   await t.test('review mode: no visitor form sends any request, including a form that would send',async()=>{
    const brief=JSON.parse(await readFile(resolve(site,'tests/fixtures/review-b2b.json'),'utf8'));
    brief.product.journey='assessment';

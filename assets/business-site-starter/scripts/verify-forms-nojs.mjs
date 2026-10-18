@@ -65,17 +65,32 @@ async function load(cdp,url){const loaded=cdp.once('Page.loadEventFired',20000);
 async function currentUrl(cdp){const h=await cdp.send('Page.getNavigationHistory');return h.entries[h.currentIndex].url;}
 async function documentRoot(cdp){return (await cdp.send('DOM.getDocument',{depth:-1,pierce:true})).root.nodeId;}
 
+const LOCAL_HOSTS=new Set(['127.0.0.1','localhost','[::1]']);
+export function assertControlledBase(base){
+ const url=new URL(base);
+ if(!LOCAL_HOSTS.has(url.hostname))throw new Error(`Refusing to submit forms on ${url.origin}: this check only runs against a local build it controls, never a live site`);
+ return url.origin;
+}
+
 export async function checkFormsWithoutJs(root,{base,review,paths=[],maxPages=40}={}){
+ if(base)assertControlledBase(base);
  const server=base?null:await startServer(root);
  base??=server.base;
+ const origin=assertControlledBase(base);
  review??=isReview(JSON.parse(readFileSync(resolve(root,'content/site.json'),'utf8')));
  const chrome=await launchChrome();
  const cdp=new Cdp(chrome.page.webSocketDebuggerUrl);
- const report={status:'PASS',base,review,javascript:'disabled',pages:[],forms:[],errors:[]};
+ const report={status:'PASS',base,review,javascript:'disabled',submissions:'every request after submit is stubbed inside the browser and never reaches a server',pages:[],forms:[],errors:[]};
  try{
   await cdp.open();
   let log=null;
-  cdp.on(m=>{if(m.method==='Network.requestWillBeSent'&&log)log.push({id:m.params.requestId,url:m.params.request.url,method:m.params.request.method,postData:m.params.request.postData,hasPostData:m.params.request.hasPostData});});
+  cdp.on(m=>{
+   if(m.method!=='Fetch.requestPaused')return;
+   const r=m.params.request;
+   const body=r.postData??(r.postDataEntries||[]).map(e=>Buffer.from(e.bytes||'','base64').toString()).join('');
+   log?.push({url:r.url,method:r.method,postData:body||null});
+   cdp.send('Fetch.fulfillRequest',{requestId:m.params.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'text/html'}],body:Buffer.from('<!doctype html><title>stub</title><p>Stubbed by verify-forms-nojs. Nothing was sent.</p>').toString('base64')}).catch(()=>{});
+  });
   for(const [method,params] of [['Page.enable'],['DOM.enable'],['Network.enable'],['Network.setCacheDisabled',{cacheDisabled:true}],['Emulation.setScriptExecutionDisabled',{value:true}],['Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false}]])await cdp.send(method,params);
   const queue=[...new Set(['/',...paths])],seen=new Set(queue),formPages=[];
   while(queue.length&&report.pages.length<maxPages){
@@ -94,7 +109,8 @@ export async function checkFormsWithoutJs(root,{base,review,paths=[],maxPages=40
    await load(cdp,base+path);
    const doc=await documentRoot(cdp),form=(await query(cdp,doc,'form'))[index];
    const formAttrs=await attrs(cdp,form);
-   const entry={path,index,method:(formAttrs.method||'get').toLowerCase(),action:formAttrs.action??null,inertWithoutJs:(await query(cdp,form,'fieldset[disabled]')).length>0,fields:[],submitted:false,finalUrl:null,requests:[],errors:[]};
+   const target=new URL(formAttrs.action||path,base+path);
+   const entry={path,index,method:(formAttrs.method||'get').toLowerCase(),action:formAttrs.action??null,target:target.href,inertWithoutJs:(await query(cdp,form,'fieldset[disabled]')).length>0,fields:[],submitted:false,finalUrl:null,requests:[],errors:[]};
    const secrets=[],names=new Set();
    let n=0;
    for(const control of await query(cdp,form,'input, select, textarea')){
@@ -107,21 +123,32 @@ export async function checkFormsWithoutJs(root,{base,review,paths=[],maxPages=40
     else if(type==='select'){await click(cdp,control);await key(cdp,'ArrowDown','ArrowDown',40);await key(cdp,'Enter','Enter',13);}
     entry.fields.push({name:a.name||null,type});
    }
+   if(target.origin!==origin||!/^https?:$/.test(target.protocol)){
+    entry.errors.push(`Refused to submit: the form action ${target.href} is not the local controlled build, so the check will not send it`);
+    report.forms.push(entry);report.errors.push(...entry.errors.map(e=>`${path} form ${index+1}: ${e}`));continue;
+   }
    log=[];
+   await cdp.send('Fetch.enable',{patterns:[{urlPattern:'*',requestStage:'Request'}]});
    const submitter=(await query(cdp,form,'button:not([type=button]):not([type=reset]), input[type=submit], input[type=image]'))[0];
    if(submitter)entry.submitted=await click(cdp,submitter);
    else{const text=(await query(cdp,form,'input:not([type]), input[type=text], input[type=email], input[type=search]'))[0];if(text){await click(cdp,text);await key(cdp,'Enter','Enter',13);entry.submitted=true;}}
    await sleep(2000);
    const requests=log;log=null;
-   for(const r of requests)if(r.hasPostData&&r.postData==null)r.postData=(await cdp.send('Network.getRequestPostData',{requestId:r.id}).catch(()=>({postData:''}))).postData;
+   await cdp.send('Fetch.disable');
    entry.finalUrl=await currentUrl(cdp);
-   entry.requests=requests.map(({url,method,postData})=>({url,method,postData:postData??null}));
+   entry.requests=requests.map(r=>({...r,stubbed:true}));
    const decoded=s=>{try{return decodeURIComponent((s||'').replace(/\+/g,' '));}catch{return s||'';}};
    const leaks=s=>secrets.filter(v=>decoded(s).includes(v)).concat([...names].filter(nm=>new RegExp(`(^|[?&])${nm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}=`).test(decoded(s))).map(nm=>`${nm}=`));
    const url=new URL(entry.finalUrl);
    if(url.search)entry.errors.push(`The URL has a query string after submit: ${entry.finalUrl}`);
    for(const v of leaks(entry.finalUrl))entry.errors.push(`The URL carries a field value: ${v}`);
-   for(const r of entry.requests)for(const v of [...leaks(r.url),...leaks(r.postData)])entry.errors.push(`A ${r.method} request to ${r.url} carries a field value: ${v}`);
+   for(const r of entry.requests){
+    for(const v of leaks(r.url))entry.errors.push(`A ${r.method} request URL carries a field value: ${v} (${r.url})`);
+    const body=leaks(r.postData);
+    r.intentionalPost=!review&&body.length>0&&r.method==='POST'&&r.url.split('?')[0]===target.href.split('?')[0]&&!new URL(r.url).search;
+    if(body.length&&!r.intentionalPost)entry.errors.push(`A ${r.method} request to ${r.url} carries field values outside the form's own POST action`);
+    if(new URL(r.url).origin!==origin)entry.errors.push(`A request went to another origin after submit: ${r.url}`);
+   }
    if(review&&entry.requests.length)entry.errors.push(`Review mode sent ${entry.requests.length} request(s) after submit; a private preview must send none`);
    if(entry.method!=='post'&&!entry.inertWithoutJs)entry.errors.push('The form can submit without JavaScript and is not method="post"');
    report.forms.push(entry);report.errors.push(...entry.errors.map(e=>`${path} form ${index+1}: ${e}`));
@@ -137,8 +164,8 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).hr
  const report=await checkFormsWithoutJs(root,{base:at>=0?args[at+1]:undefined,paths:pi>=0?args[pi+1].split(',').filter(Boolean):[]});
  await mkdir(resolve(root,'evidence'),{recursive:true});
  await writeFile(resolve(root,'evidence/forms-nojs.json'),JSON.stringify(report,null,2)+'\n');
- console.log(`${report.status}: ${report.forms.length} visitor form(s) on ${report.pages.length} page(s) submitted with JavaScript disabled (${report.review?'review mode':'not review mode'}).`);
- for(const f of report.forms)console.log(`  ${f.path} form ${f.index+1}: method=${f.method}${f.inertWithoutJs?' inert-without-js':''} fields=${f.fields.map(x=>x.name||x.type).join(',')||'none'} submitted=${f.submitted} finalUrl=${f.finalUrl} requestsAfterSubmit=${f.requests.length}`);
+ console.log(`${report.status}: ${report.forms.length} visitor form(s) on ${report.pages.length} page(s) submitted with JavaScript disabled (${report.review?'review mode':'not review mode'}). Post-submit requests are stubbed in the browser; nothing reaches a server.`);
+ for(const f of report.forms)console.log(`  ${f.path} form ${f.index+1}: method=${f.method}${f.inertWithoutJs?' inert-without-js':''} fields=${f.fields.map(x=>x.name||x.type).join(',')||'none'} submitted=${f.submitted} finalUrl=${f.finalUrl} requestsAfterSubmit=${f.requests.length}${f.requests.some(r=>r.intentionalPost)?' (intentional POST body to its own action)':''}`);
  for(const e of report.errors)console.error(`• ${e}`);
  if(report.status!=='PASS')process.exitCode=1;
 }
