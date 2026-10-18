@@ -73,8 +73,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "3f6542b3a33632877bcffad2aed7c8cfebec3d44c3bffbc130d93e22751635aa",
-      "bytes": 4833
+      "sha256": "657e688b62fbb0d456d953460d0420a39219e7d8e0b6f0cb08081d0809ae0688",
+      "bytes": 5041
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -378,18 +378,18 @@
     },
     {
       "path": "roles/backend.md",
-      "sha256": "e18221e27f18235c4bf47f4e800f13328ad528b59ee5001b0f59fc32bf106e99",
-      "bytes": 11208
+      "sha256": "c0f8a5235955f3f293284585d38bf1fd980b6105304af7e7ff8f82ee9b600f82",
+      "bytes": 11438
     },
     {
       "path": "roles/designer.md",
-      "sha256": "4c36adc45d78d42f3d7d6a48719f13a1a09142ccc2e38fc17561775a4716fd42",
-      "bytes": 11742
+      "sha256": "6bebd55e5b56a61d695e523bf5e429370ed1aad349a85c8f9340196f0579153d",
+      "bytes": 11972
     },
     {
       "path": "roles/frontend.md",
-      "sha256": "912294a24d5865973ddca967fc13cb1e47c788ce31a44a55839b10d6cb66e328",
-      "bytes": 15667
+      "sha256": "1623f83cb719bcd1f90a938dd59dabdb035d9c3f6259f43d670e71b04b286a31",
+      "bytes": 15897
     },
     {
       "path": "roles/marketing-performance.md",
@@ -413,13 +413,13 @@
     },
     {
       "path": "roles/pm.md",
-      "sha256": "0486c905b2c3b073991e72b6f66486c0ccd0619f52510b6fc39418961e39764b",
-      "bytes": 11353
+      "sha256": "7a65341c6cde337eb7b305d3d253705735a5afb784c9c0dbe90e0be79aec3710",
+      "bytes": 11683
     },
     {
       "path": "roles/research.md",
-      "sha256": "33db744b8bb0ab23dcde146d7b6ee2de7af9eef4894c2b8d41ca5c9fdd24bd61",
-      "bytes": 8624
+      "sha256": "3b463ec814a6ee9b83c7e6d3781eff6fe2ba023d2370a3f34b32a8e3e7813e47",
+      "bytes": 8854
     },
     {
       "path": "scripts/build-release-manifest.mjs",
@@ -1158,8 +1158,8 @@
     },
     {
       "path": "skills/ship-ai-product-manager/SKILL.md",
-      "sha256": "ac7d2beb6ef6a87cec726c4ab4be93bbffa7e08acc200b579a6ce61cccf4ed13",
-      "bytes": 3815
+      "sha256": "dd7fa8829b78920a1e4c7b5dceb72123dc494764c3a47e177d640df57c065c3b",
+      "bytes": 4054
     },
     {
       "path": "skills/ship-ai-product-researcher/SKILL.md",
@@ -1173,8 +1173,8 @@
     },
     {
       "path": "skills/ship-ai-team-workflow/SKILL.md",
-      "sha256": "677e72d555c632127d6c1425f64c517fe042a76febfbab38348d3d66f872b20d",
-      "bytes": 2813
+      "sha256": "53785a80e65b1065c61df6a68fa00031774077ddf02b8f42727d2e4d23f03f02",
+      "bytes": 3038
     },
     {
       "path": "skills/signup/LICENSE",
@@ -1328,28 +1328,28 @@
     },
     {
       "path": "templates/backend.json",
-      "sha256": "4982b725eb559c987ba15d62a13e0ed36f1a0b69a6be9a6a72761af57f98345c",
-      "bytes": 2303
+      "sha256": "8050e661676dac5d0b93afc1faade16eb2f69d9e2b7aca383e7898165dafdf40",
+      "bytes": 2533
     },
     {
       "path": "templates/designer.json",
-      "sha256": "47cb9d160243ec2ee7e02b17556102ee7031ba6263234c94688defa398b9626a",
-      "bytes": 2545
+      "sha256": "a2935b936ecbd3454e6879d2e7b09a0a3113a4483e7d878aceb033595e4629e4",
+      "bytes": 2775
     },
     {
       "path": "templates/frontend.json",
-      "sha256": "ed9c2effb20f22f0e6b209704972bcb70e8f3a0b22c02431ce430ffae8a69e17",
-      "bytes": 2710
+      "sha256": "f8f7acf7ce0daf93eb766825d94f794e29a664a6fd5379040ea726d7d078455d",
+      "bytes": 2940
     },
     {
       "path": "templates/pm.json",
-      "sha256": "8c5e9d0f8179dc46d1661bb5bb690f633b1ae6422c4d7e9751a11620fdf8cad8",
-      "bytes": 2922
+      "sha256": "d9c3eb0330642a57c401e52e88e280e941e8d7bba38b2e0d898fb4e9cf54c3c3",
+      "bytes": 3167
     },
     {
       "path": "templates/research.json",
-      "sha256": "e162efbeb02ce143263b0c3ef4f1042f2d68d40c35490a2d8ae37031358e3b6c",
-      "bytes": 2126
+      "sha256": "d04fa2481bf29520c0a28edf9ec39f4652c62d4f3ae045c96c9fdc8e962253f5",
+      "bytes": 2427
     },
     {
       "path": "tests/browser/forms-nojs.test.mjs",

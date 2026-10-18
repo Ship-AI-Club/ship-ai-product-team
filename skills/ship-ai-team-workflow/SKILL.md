@@ -15,7 +15,7 @@ Use `workshop-owner-language` only for owner questions, progress updates, worksh
 Owners never run commands, edit files or pass messages between bots. Owner messages are short, natural and nontechnical.
 Keep facts, hypotheses and estimates distinct. Do not invent business proof or impose a CRM.
 First-time drafts use brief mode "review": recommendations stay "proposed" with a source and rationale, nothing is marked approved for the owner, and the draft is private (noindex, no deploy). Production and publication need the owner's final approvals.
-Ask for owner review at positioning, product plan and working-site boundaries. The Designer selects the direction unless the owner asks for exploration or a real business decision is missing. Never ask the owner to settle routine layout decisions. The owner first sees a polished draft, only after Gate 2 PASS.
+By default (review mode) the team recommends and keeps working internally through the polished private draft; pause for owner review between stages only when the owner explicitly asks for a step-by-step workshop or staged review. The owner always reviews the working site before production or marketing. The Designer selects the direction unless the owner asks for exploration or a real business decision is missing. Never ask the owner to settle routine layout decisions. The owner first sees a polished draft, only after Gate 2 PASS.
 After site approval, hand the same brief to Social Media Manager and the existing marketing team.
 External sends, deployment and spend need the owner's instruction for that action.
 Do not add recurring routines from a reference bot.
