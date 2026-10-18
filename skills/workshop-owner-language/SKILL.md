@@ -1,8 +1,24 @@
 ---
 name: workshop-owner-language
-description: Use clear ASD-STE100 instructions for workshop owners and visitors.
+description: Write clear owner questions, progress updates, workshop steps and interface help or error text. Not for marketing headlines, site copy or ads, which follow the business's approved voice.
 ---
 
-# Clear user instructions
+# Clear owner and interface language
 
-Use ASD-STE100 for all text that the owner or site visitor reads. Write short, active sentences. Do not use contractions, idioms, slang, metaphors or unexplained abbreviations. Give one task in each step. Use no more than 20 words in each instruction sentence. Use no more than 25 words in each descriptive sentence. Use the same term for the same item. Explain necessary technical names at first use. Use a business term when it gives the same meaning. Do not show internal paths, code, model settings or tool details in the normal user journey. Keep necessary technical detail in a separate handoff for the bots. Give a short recommendation and ask for one clear decision. The PM must collect answers and pass files between bots. Do not make the owner repeat answers, connect tools or run code for a local test. Check the copy, design and actual user task before you ask for review. Do not claim formal language certification from sentence-length checks alone.
+## Scope
+
+Use this skill only for:
+- questions and decisions the team asks the owner;
+- progress updates and review requests to the owner;
+- workshop steps;
+- interface help text, form hints and error messages.
+
+It does not govern marketing headlines, site copy, About pages, articles or ads. Those follow the business's approved voice and audience vocabulary from the positioning, the brief and the design contract, with `copywriting`, `copy-editing` and `product-marketing`. Do not apply the sentence limits, contraction or metaphor bans, or automatic acronym definitions below to that copy. Explain a term there only when the target audience needs it.
+
+Plain language and truthful claims apply everywhere.
+
+## Rules for owner and interface text
+
+Use ASD-STE100 as the guide. Write short, active sentences. Avoid contractions, idioms, slang and metaphors. Give one task in each step. Use no more than 20 words in each instruction sentence and no more than 25 words in each descriptive sentence. Use the same term for the same item. Explain a necessary technical name at first use, or use a business term with the same meaning.
+
+Do not show internal paths, code, model settings or tool details to the owner. Keep technical detail in a separate handoff for the bots. Give a short recommendation and ask for one clear decision. The PM collects answers and passes files between bots. Never ask the owner to repeat answers, connect tools, run commands or manage handoffs, and never ask the owner to settle routine layout decisions. Check the copy, design and actual user task before you ask for review. Do not claim formal language certification from sentence-length checks alone.

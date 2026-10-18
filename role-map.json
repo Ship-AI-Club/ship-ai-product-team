@@ -9,6 +9,7 @@
   "roles": {
     "pm": [
       "ship-ai-product-manager",
+      "ship-ai-design-gate",
       "lead-magnets",
       "copywriting",
       "copy-editing"
@@ -20,11 +21,10 @@
     ],
     "designer": [
       "ship-ai-product-designer",
+      "ship-ai-design-gate",
       "shared-design-library",
       "yc-interface-craft",
       "intentional-ui-design",
-      "illustration-design-grammar",
-      "emil-design-eng",
       "frontend-design",
       "lead-magnets",
       "copywriting",
@@ -33,12 +33,11 @@
     ],
     "frontend": [
       "ship-ai-frontend-engineer",
+      "ship-ai-design-gate",
       "cursor-cloud-build",
       "shared-design-library",
       "yc-interface-craft",
       "intentional-ui-design",
-      "illustration-design-grammar",
-      "emil-design-eng",
       "frontend-design",
       "copywriting",
       "copy-editing",
@@ -50,7 +49,11 @@
     ]
   },
   "conditional": {
+    "illustration": [
+      "illustration-design-grammar"
+    ],
     "motion": [
+      "emil-design-eng",
       "animate",
       "review-animations",
       "animation-performance",
@@ -86,12 +89,52 @@
       "ad-creative",
       "emails",
       "signup",
-      "lead-magnets"
+      "lead-magnets",
+      "customer-research",
+      "competitor-profiling"
+    ],
+    "marketing-review": [
+      "ship-ai-design-gate",
+      "product-marketing",
+      "copywriting",
+      "cro",
+      "ad-creative"
+    ],
+    "research-depth": [
+      "customer-research",
+      "competitor-profiling"
     ]
   },
   "notes": [
     "Available does not mean every skill is loaded into every prompt.",
-    "Read relevant full files and referenced guidance.",
+    "Read relevant full files and referenced guidance. Conditional groups load only when the task or design contract needs them.",
+    "Only the PM prepares the one project. Gate verdicts come from reviews of actual screenshots, never from file audits or tests.",
     "PStack is a separate required plugin. Its skill count is not this plugin file count."
+  ],
+  "designPrecedence": [
+    {
+      "skill": "yc-interface-craft",
+      "role": "Leads visual direction. Read SKILL.md and only the 3-5 matching research records."
+    },
+    {
+      "skill": "intentional-ui-design",
+      "role": "Sets the quality floor."
+    },
+    {
+      "skill": "frontend-design",
+      "role": "Guides composition and type."
+    },
+    {
+      "skill": "illustration-design-grammar",
+      "role": "Only when the design contract needs illustration. Not for UI styling."
+    },
+    {
+      "skill": "emil-design-eng",
+      "role": "Only when the design contract needs motion, with the conditional motion skills."
+    },
+    {
+      "skill": "pick-ui-library",
+      "role": "Only when the design contract needs a component reference (also prototype, ask-sonner)."
+    }
   ]
 }
