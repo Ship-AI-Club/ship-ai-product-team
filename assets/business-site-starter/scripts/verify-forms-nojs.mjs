@@ -1,4 +1,6 @@
 import {spawn} from 'node:child_process';
+import {randomBytes} from 'node:crypto';
+import {request as httpRequest} from 'node:http';
 import {existsSync,mkdtempSync,readFileSync,rmSync} from 'node:fs';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {createServer} from 'node:net';
@@ -19,8 +21,43 @@ async function waitFor(fn,ms,what){
  throw new Error(`Timed out waiting for ${what}${last?`: ${last.message}`:''}`);
 }
 
+// Node 20 has no global WebSocket (and 20.9 has no --experimental-websocket flag), so this minimal
+// client speaks just enough RFC 6455 for one local DevTools connection: masked text frames out,
+// unmasked text/continuation frames in, ping/pong and close.
+class LocalWebSocket extends EventTarget{
+ constructor(url){
+  super();this.buffer=Buffer.alloc(0);this.parts=[];
+  const req=httpRequest(url.replace(/^ws:/,'http:'),{headers:{Connection:'Upgrade',Upgrade:'websocket','Sec-WebSocket-Version':'13','Sec-WebSocket-Key':randomBytes(16).toString('base64')}});
+  req.on('upgrade',(res,socket,head)=>{this.socket=socket;socket.on('data',d=>this.read(d));socket.on('error',()=>{});if(head.length)this.read(head);this.dispatchEvent(new Event('open'));});
+  req.on('response',()=>this.dispatchEvent(new Event('error')));
+  req.on('error',()=>this.dispatchEvent(new Event('error')));
+  req.end();
+ }
+ read(chunk){
+  this.buffer=Buffer.concat([this.buffer,chunk]);
+  while(this.buffer.length>=2){
+   const b=this.buffer,fin=b[0]&0x80,op=b[0]&0x0f;let len=b[1]&0x7f,at=2;
+   if(len===126){if(b.length<4)return;len=b.readUInt16BE(2);at=4;}
+   else if(len===127){if(b.length<10)return;len=Number(b.readBigUInt64BE(2));at=10;}
+   if(b.length<at+len)return;
+   const payload=b.subarray(at,at+len);this.buffer=b.subarray(at+len);
+   if(op===9)this.frame(10,payload);
+   else if(op===8){this.socket.end();}
+   else if(op===1||op===0){this.parts.push(payload);if(fin){const data=Buffer.concat(this.parts).toString('utf8');this.parts=[];this.dispatchEvent(new MessageEvent('message',{data}));}}
+  }
+ }
+ frame(op,payload){
+  const mask=randomBytes(4),len=payload.length;
+  const head=len<126?Buffer.from([0x80|op,0x80|len]):len<65536?Buffer.from([0x80|op,0x80|126,len>>8,len&255]):Buffer.concat([Buffer.from([0x80|op,0x80|127]),(()=>{const x=Buffer.alloc(8);x.writeBigUInt64BE(BigInt(len));return x;})()]);
+  const body=Buffer.from(payload);for(let i=0;i<body.length;i++)body[i]^=mask[i%4];
+  this.socket.write(Buffer.concat([head,mask,body]));
+ }
+ send(text){this.frame(1,Buffer.from(text,'utf8'));}
+ close(){if(this.socket&&!this.socket.destroyed){this.frame(8,Buffer.alloc(0));this.socket.end();}}
+}
+
 class Cdp{
- constructor(url){this.ws=new WebSocket(url);this.id=0;this.pending=new Map();this.listeners=[];
+ constructor(url){this.ws=globalThis.WebSocket?new WebSocket(url):new LocalWebSocket(url);this.id=0;this.pending=new Map();this.listeners=[];
   this.ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id&&this.pending.has(m.id)){const {ok,fail}=this.pending.get(m.id);this.pending.delete(m.id);m.error?fail(new Error(`${m.error.message}`)):ok(m.result);}else if(m.method)for(const l of this.listeners)l(m);});}
  open(){return new Promise((ok,fail)=>{this.ws.addEventListener('open',ok,{once:true});this.ws.addEventListener('error',fail,{once:true});});}
  send(method,params={}){const id=++this.id;this.ws.send(JSON.stringify({id,method,params}));return new Promise((ok,fail)=>this.pending.set(id,{ok,fail}));}
