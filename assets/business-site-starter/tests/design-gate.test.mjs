@@ -207,12 +207,9 @@ test('each rule maps to an implemented decision and a screenshot region',async()
  }finally{await p.done();}
 });
 
-test('a mock, a changed contract, missing skill reads or the wrong Cloud model invalidate Gate 1',async()=>{
+test('a mock, missing skill reads or the wrong Cloud model invalidate Gate 1',async()=>{
  const p=await project();
  try{
-  await writeFile(join(p.root,'design/contract.md'),CONTRACT.replace('Example headline','Another headline'));
-  assert.ok(errorsOf(p).some(e=>e.includes('contract changed')));
-  await writeFile(join(p.root,'design/contract.md'),CONTRACT);
   const base=p.gate.gate1.render;
   for(const [render,msg] of [[{...base,fidelity:'mock'},'low-fidelity mock'],[{...base,skillsRead:[]},'actually applied'],[{...base,modelSelector:'Claude Sonnet 5.5 Medium'},'does not match'],[{...base,fast:true},'Fast'],[{...base,runUrl:''},'Cloud run URL']]){
    const g=structuredClone(p.gate);g.gate1.render=render;await p.save(g);
@@ -255,16 +252,17 @@ test('production build runs the gate',async()=>{
  assert.match(pkg.scripts['build:review'],/--stage render/);
 });
 
-test('editing the page, styles, content or brief after review invalidates the PASS',async()=>{
- for(const [file,edit] of [['app/page.jsx','export default function Home(){return <main>changed</main>}'],['app/globals.css','body{color:red}'],['content/site.json',null],['brief/project.json',null],['components/Hero.jsx','export default function Hero(){return null}']]){
-  const p=await project();
+test('editing the page, styles, content, contract or brief after Gate 2 voids it; historic Gate 1 keeps its own snapshot',async()=>{
+ const edits=[['app/page.jsx','export default function Home(){return <main>changed</main>}','changed after this render was reviewed'],['app/globals.css','body{color:red}','changed after this render was reviewed'],['content/site.json',null,'changed after this render was reviewed'],['brief/project.json',null,'brief changed after this render was reviewed'],['components/Hero.jsx','export default function Hero(){return null}','changed after this render was reviewed'],['design/contract.md',INVENTORY_CONTRACT.replace('Example headline','Another headline'),'contract changed']];
+ for(const [file,edit,message] of edits){
+  const p=await project({},INVENTORY_CONTRACT);
   try{
-   assert.deepEqual(errorsOf(p),[]);
+   await p.save(await fullSite(p));
+   assert.deepEqual(errorsOf(p,'owner-review'),[]);
    if(edit===null){const b=JSON.parse(await readFile(join(p.root,file)));b.positioning.headline='A different headline';await writeFile(join(p.root,file),JSON.stringify(b));}
    else{await mkdir(join(p.root,file,'..'),{recursive:true});await writeFile(join(p.root,file),edit);}
-   const errors=errorsOf(p);
-   assert.ok(errors.some(e=>e.includes('changed after this render was reviewed')),`${file} edit did not invalidate the PASS`);
-   assert.equal(checkDesignGate(p.root).status,'FAIL');
+   assert.ok(errorsOf(p,'owner-review').some(e=>e.startsWith('Gate 2')&&e.includes(message)),`${file} edit did not void Gate 2`);
+   assert.deepEqual(errorsOf(p,'build'),[],`${file} edit must not void the historic Gate 1 snapshot`);
   }finally{await p.done();}
  }
 });

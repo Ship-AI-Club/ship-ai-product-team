@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import {existsSync,readFileSync,readdirSync,statSync} from 'node:fs';
 import {relative,resolve} from 'node:path';
-import {siteBuild,demoMisuse} from './brief.mjs';
+import {siteBuild,demoMisuse,visitorContent} from './brief.mjs';
 
 export const CONTRACT_PATH='design/contract.md';
 export const GATE_PATH='design/gate.json';
@@ -16,19 +16,23 @@ const MODEL_LABELS={'claude-sonnet-5-5':/sonnet\s*5\.5/i,'claude-opus-5-5':/opus
 
 export const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 export const BRIEF_PATH='brief/project.json';
+export const SITE_PATH='content/site.json';
 // Everything that changes what the reviewed page looks like or says. Gate state, renders and tests are excluded.
+// The configured brief (content/site.json) enters as its visitor content, so approval evidence and release
+// metadata recorded after review do not void it, while any status or content change that visitors see does.
 export const RENDER_INPUT_DIRS=['app','components','lib','content','public','styles'];
-export const RENDER_INPUT_FILES=[BRIEF_PATH,'next.config.mjs','package.json','package-lock.json','jsconfig.json',CONTRACT_PATH];
+export const RENDER_INPUT_FILES=['next.config.mjs','package.json','package-lock.json','jsconfig.json',CONTRACT_PATH];
+const contentHash=path=>sha256(Buffer.from(JSON.stringify(visitorContent(JSON.parse(readFileSync(path,'utf8'))))));
 function walk(root,dir){
  const full=resolve(root,dir);if(!existsSync(full))return [];
  return statSync(full).isDirectory()?readdirSync(full).sort().flatMap(n=>walk(root,`${dir}/${n}`)):[dir];
 }
 export function sourceFingerprint(root){
  const files=[...RENDER_INPUT_DIRS.flatMap(d=>walk(root,d)),...RENDER_INPUT_FILES.filter(f=>existsSync(resolve(root,f)))].sort();
- const lines=files.map(f=>`${relative(root,resolve(root,f))}\0${sha256(readFileSync(resolve(root,f)))}`);
+ const lines=files.map(f=>{const rel=relative(root,resolve(root,f));return `${rel}\0${rel===SITE_PATH?`visitor:${contentHash(resolve(root,f))}`:sha256(readFileSync(resolve(root,f)))}`;});
  return {sha256:sha256(Buffer.from(lines.join('\n'))),files:files.length};
 }
-export const briefFingerprint=root=>existsSync(resolve(root,BRIEF_PATH))?sha256(readFileSync(resolve(root,BRIEF_PATH))):'';
+export const briefFingerprint=root=>existsSync(resolve(root,BRIEF_PATH))?contentHash(resolve(root,BRIEF_PATH)):'';
 const filled=x=>typeof x==='string'&&x.trim().length>0;
 const list=x=>Array.isArray(x)?x:[];
 
@@ -162,11 +166,13 @@ function checkReview(review,role,label,hashes,final,round={},items=null){
  return errors;
 }
 
-export function validateGateStage(root,gate,name,{contractSha256,brief,source,briefSha256,inventory=null}={}){
+// historic: Gate 1 binds its own hero and proof snapshot; only the current candidate (Gate 2) must match today's files.
+export function validateGateStage(root,gate,name,{contractSha256,brief,source,briefSha256,inventory=null,historic=false}={}){
  if(!gate||typeof gate!=='object')return [`${name}: no review recorded`];
  if(gate.status!=='PASS')return [`${name}: not passed (status ${gate.status||'missing'}); expansion and owner review stay blocked`];
  const errors=[];
- if(contractSha256&&gate.contractSha256!==contractSha256)errors.push(`${name}: the design contract changed after review; review the new version`);
+ if(historic&&!/^[0-9a-f]{64}$/.test(gate.contractSha256||''))errors.push(`${name}: record the contractSha256 of the contract that was reviewed`);
+ if(!historic&&contractSha256&&gate.contractSha256!==contractSha256)errors.push(`${name}: the design contract changed after review; review the new version`);
  errors.push(...checkRender(root,gate,name,brief));
  const rounds=list(gate.rounds);
  if(!rounds.length)return [...errors,`${name}: record the initial render and both written critiques`];
@@ -175,12 +181,13 @@ export function validateGateStage(root,gate,name,{contractSha256,brief,source,br
   if(round.round!==i+1)errors.push(`${label}: rounds must be numbered 1, 2, 3 in order`);
   if(i>0&&(!filled(round.revision?.summary)||!list(round.revision?.addresses).length))errors.push(`${label}: record the revision and the corrections it addresses before the re-render`);
   if(!/^[0-9a-f]{64}$/.test(round.sourceSha256||'')||!/^[0-9a-f]{64}$/.test(round.briefSha256||''))errors.push(`${label}: record the sourceSha256 and briefSha256 of the build that was rendered (npm run gate:fingerprint)`);
-  if(final&&source&&round.sourceSha256!==source)errors.push(`${label}: the page source, styles, content or brief changed after this render was reviewed; build, render and review the current version`);
-  if(final&&briefSha256!=null&&round.briefSha256!==briefSha256)errors.push(`${label}: the brief changed after this render was reviewed; render and review the current brief`);
+  if(!historic&&final&&source&&round.sourceSha256!==source)errors.push(`${label}: the page source, styles, content or brief changed after this render was reviewed; build, render and review the current version`);
+  if(!historic&&final&&briefSha256!=null&&round.briefSha256!==briefSha256)errors.push(`${label}: the brief changed after this render was reviewed; render and review the current brief`);
   const shots=inventory?checkInventoryScreenshots(root,round.screenshots,label,inventory,final):checkScreenshots(root,round.screenshots,label);errors.push(...shots.errors);
   const reviews=list(round.reviews);
   for(const role of REVIEWER_ROLES)errors.push(...checkReview(reviews.find(r=>r.role===role),role,label,shots.hashes,final,round,inventory));
-  if(!final&&reviews.every(r=>r.verdict==='PASS'))errors.push(`${label}: both reviewers passed, so this must be the final round`);
+  const next=rounds[i+1],changed=next&&(next.sourceSha256!==round.sourceSha256||next.briefSha256!==round.briefSha256);
+  if(!final&&reviews.every(r=>r.verdict==='PASS')&&!changed)errors.push(`${label}: both reviewers passed, so this must be the final round unless the next round reviews a changed candidate`);
  });
  const names=new Set();
  for(const round of rounds)for(const r of list(round.reviews))if(filled(r.reviewer))names.add(`${r.role}:${r.reviewer.trim().toLowerCase()}`);
@@ -215,7 +222,7 @@ export function checkDesignGate(root,{stage='build',brief}={}){
  errors.push(...validateOfferReview(gate.offerReview));
  if(stage==='build'||stage==='owner-review'){
   const ctx={contractSha256:sha256(Buffer.from(contract)),brief,source:sourceFingerprint(root).sha256,briefSha256:briefFingerprint(root)};
-  errors.push(...validateGateStage(root,gate.gate1,'Gate 1 (hero and first proof)',ctx));
+  errors.push(...validateGateStage(root,gate.gate1,'Gate 1 (hero and first proof)',{...ctx,historic:true}));
   if(stage==='owner-review'){
    const inventory=experienceInventory(contract);
    errors.push(...inventory.errors.map(e=>`Gate 2 (full site): ${e}`));

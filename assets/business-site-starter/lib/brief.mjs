@@ -1,4 +1,12 @@
 export const ready=x=>x?.status==='approved';
+// Approval evidence and release metadata: who approved and when, the brief revision, the owner intake, the
+// build setup, the publication flag and the live address. None of them changes a rendered page. Status,
+// approved, mode and every content field stay in, because ready(), priceLabel and the review chrome turn
+// them into visible pages, labels and notes that must be reviewed.
+const RELEASE_KEYS=new Set(['version','intake','setup','publicationApproved','siteUrl']);
+const EVIDENCE_KEYS=new Set(['approvedBy','approvedAt']);
+const canonical=(x,top)=>Array.isArray(x)?x.map(v=>canonical(v,false)):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().filter(k=>!EVIDENCE_KEYS.has(k)&&!(top&&RELEASE_KEYS.has(k))).map(k=>[k,canonical(x[k],false)])):x;
+export const visitorContent=p=>canonical(p,true);
 export const MODES=['review','production'];
 // A non-demo brief without a mode keeps the strict 1.0.2 production rules.
 export const briefMode=p=>p?.isDemo?'demo':p?.mode??'production';
